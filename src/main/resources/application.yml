@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/cosmetic?serverTimezone=GMT%2B8
+    username: root
+    password: 123456
+logging:
+  level:
+    root: info
+  file:
+    name: d:/idea_workplace/cosmeticResources/logging/blog-dev.log
+project:
+  path:
+    avatarImage: d:/idea_workplace/cosmeticResources/avatarImage
+    productImagepath: d:/idea_workplace/cosmeticResources/productImage
+
+

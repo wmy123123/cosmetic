@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wmy.cosmetic.mapper.EmployeeMapper">
+    <update id="updateEmploy" parameterType="com.wmy.cosmetic.entity.Employee">
+        update t_employee set phone=#{phone},position=#{position},password=#{password},salt=#{salt} where id=#{id}
+    </update>
+    <update id="updatePassword">
+        update t_employee set password=#{password} where id=#{id}
+    </update>
+    <delete id="deleteEmployee">
+        delete from t_employee where id=#{id}
+    </delete>
+    <select id="findByUsernameAndPassword" parameterType="String" resultType="com.wmy.cosmetic.entity.Employee">
+        SELECT * FROM t_employee WHERE username=#{username}
+    </select>
+    <select id="findEmployeeList" parameterType="String"  resultType="com.wmy.cosmetic.entity.Employee">
+        SELECT * From t_employee
+        <where>
+            <if test="uuid !=null and uuid !=''">
+                and uuid=#{uuid}
+            </if>
+            <if test="name !=null and name !=''">
+                and name=#{name}
+            </if>
+        </where>
+    </select>
+
+    <insert id="addEmployee" parameterType="com.wmy.cosmetic.entity.Employee">
+        INSERT INTO t_employee(id,uuid,username,password,name,entrytime,avatar,salt,position,phone)
+        values (null,#{uuid},#{username},#{password},#{name},#{entrytime},#{avatar},#{salt},#{position},#{phone})
+    </insert>
+
+
+    <resultMap id="employeeMap" type="com.wmy.cosmetic.entity.Employee">
+        <id column="uid" property="id"/>
+        <result column="username" property="username"/>
+        <collection  property="roles" javaType="list" ofType="com.wmy.cosmetic.entity.Role">
+            <id column="id" property="id"/>
+            <result column="rname" property="name"/>
+        </collection>
+    </resultMap>
+    <select id="findRolesByEmployeeName" parameterType="string" resultMap="employeeMap">
+        SELECT e.id eid,e.name,r.id,r.name rname
+        FROM t_employee e
+	    LEFT JOIN t_employee_role er ON e.id = er.employeeid
+	    LEFT JOIN t_role r ON er.roleid = r.id
+        WHERE e.username = #{username}
+    </select>
+
+    <select id="findPermsByRoleId" parameterType="int" resultType="com.wmy.cosmetic.entity.Perm">
+
+    </select>
+    <select id="findEmployeeById" resultType="com.wmy.cosmetic.entity.Employee">
+        select * from t_employee where id=#{id}
+    </select>
+</mapper>
