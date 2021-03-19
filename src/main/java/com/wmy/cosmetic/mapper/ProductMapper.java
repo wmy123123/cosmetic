@@ -2,12 +2,13 @@ package com.wmy.cosmetic.mapper;
 
 import com.wmy.cosmetic.entity.Product;
 import com.wmy.cosmetic.entity.ProductType;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import javax.xml.crypto.Data;
 import java.util.Date;
 import java.util.List;
-
+@Mapper
 public interface ProductMapper {
     List<Product> findProductList(Integer product_id, String product_name,Integer product_type,int page, int number);
     int insertProduct(Product product);

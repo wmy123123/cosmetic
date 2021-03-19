@@ -3,11 +3,12 @@ package com.wmy.cosmetic.mapper;
 import com.wmy.cosmetic.entity.Employee;
 import com.wmy.cosmetic.entity.Perm;
 import com.wmy.cosmetic.entity.Role;
-
+import org.apache.ibatis.annotations.Mapper;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+@Mapper
 public interface EmployeeMapper {
     Employee findByUsernameAndPassword(String username);
     List<Employee> findEmployeeList(Map<String, Object> param);
