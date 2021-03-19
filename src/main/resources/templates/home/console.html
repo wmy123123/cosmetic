@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <title>layuiAdmin 控制台主页一</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" th:href="@{/layuiadmin/layui/css/layui.css}" href="../layuiadmin/layui/css/layui.css"
+          media="all">
+    <link rel="stylesheet" th:href="@{/layuiadmin/style/admin.css}" href="../layuiadmin/style/admin.css" media="all">
+</head>
+<body>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md8">
+            <div class="layui-row layui-col-space15">
+                <div class="layui-col-md6">
+                    <div class="layui-card">
+                        <div class="layui-card-header">快捷方式</div>
+                        <div class="layui-card-body">
+
+                            <div class="layui-carousel layadmin-carousel layadmin-shortcut">
+                                <div carousel-item>
+                                    <ul class="layui-row layui-col-space10">
+                                        <li class="layui-col-xs3">
+                                            <a lay-href="/page/productsList">
+                                                <i class="layui-icon layui-icon-component"></i>
+                                                <cite>产品管理</cite>
+                                            </a>
+                                        </li>
+                                        <li class="layui-col-xs3">
+                                            <a lay-href="/page/memberlist">
+                                                <i class="layui-icon layui-icon-cart-simple"></i>
+                                                <cite>添加订单</cite>
+                                            </a>
+                                        </li>
+                                        <li class="layui-col-xs3">
+                                            <a lay-href="/page/orderForm">
+                                                <i class="layui-icon layui-icon-template"></i>
+                                                <cite>销售订单</cite>
+                                            </a>
+                                        </li>
+                                        <li class="layui-col-xs3">
+                                            <a lay-href="/page/administratorsRole">
+                                                <i class="layui-icon layui-icon-auz"></i>
+                                                <cite>角色管理</cite>
+                                            </a>
+                                        </li>
+                                        <li class="layui-col-xs3">
+                                            <a lay-href="/page/administratorsList">
+                                                <i class="layui-icon layui-icon-user"></i>
+                                                <cite>员工管理</cite>
+                                            </a>
+                                        </li>
+                                        <li class="layui-col-xs3">
+                                            <a lay-href="/page/statNan">
+                                                <i class="layui-icon layui-icon-survey"></i>
+                                                <cite>统计分析</cite>
+                                            </a>
+                                        </li>
+                                        <li class="layui-col-xs3">
+                                            <a lay-href="/user/updateEmplform1">
+                                                <i class="layui-icon layui-icon-set"></i>
+                                                <cite>资料设置</cite>
+                                            </a>
+                                        </li>
+                                        <li class="layui-col-xs3">
+                                            <a lay-href="/user/updateEmplform1">
+                                                <i class="layui-icon layui-icon-password"></i>
+                                                <cite>修改密码</cite>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md6">
+                    <div class="layui-card">
+                        <div class="layui-card-header">系统统计</div>
+                        <div class="layui-card-body">
+
+                            <div class="layui-carousel layadmin-carousel layadmin-backlog">
+                                <div carousel-item>
+                                    <ul class="layui-row layui-col-space10">
+                                        <li class="layui-col-xs6">
+                                            <a href="javascript:;" onclick="layer.tips('总交易数', this, {tips: 3});"
+                                               class="layadmin-backlog-body">
+                                                <h3>总交易数</h3>
+                                                <p><cite id="ordernum">66</cite></p>
+                                            </a>
+                                        </li>
+                                        <li class="layui-col-xs6">
+                                            <a href="javascript:;" onclick="layer.tips('产品数量', this, {tips: 3});"
+                                               class="layadmin-backlog-body">
+                                                <h3>产品数量</h3>
+                                                <p><cite id="productnum">12</cite></p>
+                                            </a>
+                                        </li>
+                                        <li class="layui-col-xs6">
+                                            <a href="javascript:;" onclick="layer.tips('员工人数', this, {tips: 3});"
+                                               class="layadmin-backlog-body">
+                                                <h3>员工人数</h3>
+                                                <p><cite id="employeenum">99</cite></p>
+                                            </a>
+                                        </li>
+                                        <li class="layui-col-xs6">
+                                            <a href="javascript:;" onclick="layer.tips('年交易额', this, {tips: 3});"
+                                               class="layadmin-backlog-body">
+                                                <h3>年交易额</h3>
+                                                <p><cite id="money">20</cite></p>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md12">
+                    <div class="layui-card">
+                        <div class="layui-card-header">数据概览</div>
+                        <div class="layui-card-body">
+                            <div id="main" style="width: 700px;height:350px;"></div>
+                        </div>
+                    </div>
+                    <div class="layui-card">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-md4">
+            <div class="layui-card">
+                <div class="layui-card-header">本机用户</div>
+                <div class="layui-card-body layui-text">
+                    <table class="layui-table">
+                        <colgroup>
+                            <col width="100">
+                            <col>
+                        </colgroup>
+                        <tbody>
+                        <tr style="height: 43px">
+                            <td>员工姓名</td>
+                            <td>
+                              <span th:text="${session.user.name}"></span>
+                            </td>
+                        </tr>
+                        <tr style="height: 43px">
+                            <td>员工编号</td>
+                            <td>
+                              <span th:text="${session.user.uuid}"></span>
+                            </td>
+                        </tr>
+                        <tr style="height: 43px">
+                            <td>员工职位</td>
+                           <td>
+                            <span th:text="${session.user.position}"></span>
+                            </td>
+                        </tr>
+                        <tr style="height: 43px">
+                            <td>账号状态</td>
+                            <td style="padding-bottom: 0;">
+                                <span  th:if="${session.user.status}=='0'"><span style="color:#01AAED">正常</span></span>
+                                <span  th:if="${session.user.status}=='1'">已被禁用</span>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="layui-card">
+                <!--                <div class="layui-card-header">类别数据</div>-->
+                <div class="layui-card-body">
+                  <table class="layui-hide" id="test2" lay-filter="test2"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script th:src="@{/layuiadmin/layui/layui.js}" src="../layuiadmin/layui/layui.js"></script>
+<script>
+    layui.config({
+        base: '../layuiadmin/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index' //主入口模块
+    }).use(['index', 'console', 'echarts','table'], function () {
+      var table=layui.table,
+          $=layui.jquery;
+      
+      table.render({
+        elem: '#test2',
+        url: "/StatisticsController/account",
+        cols: [
+          [
+            {field: "product_id", title: "商品编号"},
+            {field: "product_name", title: "商品名称"},
+            {field: "product_account", width: 100, title: "库存数量",style:'color:#FF5722'},
+          ]
+        ],
+        page: !0,
+        limit: 8,
+        text: "对不起，加载出现异常！"
+      })
+
+      // 基于准备好的dom，初始化echarts实例
+        var echarts = layui.echarts;
+        var myChart = echarts.init(document.getElementById('main'));
+        // var rightChart = echarts.init(document.getElementById('right'));
+        var date=[];
+        var money=[];
+        // 指定图表的配置项和数据
+        var option = {
+            grid: {
+                borderWidth: '0'
+            },
+            title: {
+                text: '日收入值'
+            },
+            tooltip: {},
+            legend: {
+                data: ['最近一周的交易金额']
+            },
+            xAxis: {
+                type: 'category',
+                splitLine: {
+                    show: false
+                },
+                data: date
+            },
+            yAxis: {
+                type: 'value',
+                scale: true,
+                splitLine: {
+                    show: false
+                },
+            },
+            series: [{
+                name: '最近一周的交易金额',
+                type: 'line',
+                markPoint: {
+                    data: [
+                        {
+                            type: 'max'
+                        }, {
+                            type: 'min'
+                        }
+                    ]
+                },
+                markLine: {
+                    data: [
+                        {
+                            type: 'average'
+                        }
+                    ]
+                },
+                smooth: true,
+                itemStyle: {
+                    normal: {
+                        color: '#009688'
+                    }
+                },
+                data: money
+            }]
+        };
+        $.ajax({
+                url: '/StatisticsController/accountWeekend',
+                type: 'GET',
+                datatype: 'json',
+                success: function (res) {
+                    var data = res.data
+                    if (data.length != 0) {
+                        for (var i = 0; i < data.length; i++) {
+                            date.push(data[i].date);
+                            money.push(data[i].money);
+                        }
+                        myChart.setOption(option);
+                    }
+                }
+            }
+        )
+        $.ajax({
+                url: '/StatisticsController/accountConsole',
+                type: 'GET',
+                datatype: 'json',
+                success: function (res) {
+                    var data=res.data
+                    if (data.length!=0) {
+                        $("#ordernum").text(data[0])
+                        $("#productnum").text(data[1])
+                        $("#employeenum").text(data[2])
+                        var a=parseFloat(data[3]);
+                        $("#money").text(a > 9999 ? (Math.floor(a/1000)/10) + '万' : a)
+                    }
+                    myChart.setOption(option);
+                }
+            }
+        )
+    });
+</script>
+</body>
+</html>
+

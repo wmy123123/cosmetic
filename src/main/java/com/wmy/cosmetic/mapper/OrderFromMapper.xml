@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wmy.cosmetic.mapper.OrderFromMapper">
+
+    <insert id="addOrderForm" parameterType="com.wmy.cosmetic.entity.OrderForm">
+        insert t_order(orderid,payment,status,createdt,enddt) values (#{orderid},#{payment},#{status},#{createdt},#{enddt});
+    </insert>
+    <insert id="addOrderItem" parameterType="list">
+        insert t_order_item(productid,num,orderid) values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.product_id},#{item.num},#{item.orderid})
+        </foreach>
+    </insert>
+    <delete id="deleteOrderForm">
+        delete from t_order where orderid=#{orderid};
+    </delete>
+    <delete id="deleteOrderItem">
+        delete from t_order_item where orderid=#{orderid}
+    </delete>
+    <select id="findOrderForm" parameterType="map" resultType="com.wmy.cosmetic.entity.OrderForm">
+        select orderid,payment,status,createdt,enddt from t_order
+        <where>
+            <if test="startdt !=null ">
+                 enddt <![CDATA[ >= ]]>  #{startdt}
+            </if>
+            <if test="enddt !=null">
+                and  enddt <![CDATA[ <= ]]> #{enddt}
+            </if>
+        </where>
+    </select>
+    <resultMap id="orderform" type="com.wmy.cosmetic.entity.OrderForm">
+        <id column="orderid" property="orderid"></id>
+        <result column="payment" property="payment"></result>
+        <result column="status" property="status"></result>
+        <result column="createdt" property="createdt"></result>
+        <result column="orderid" property="orderid"></result>
+        <result column="enddt" property="enddt"></result>
+        <collection property="orderItem"  ofType="com.wmy.cosmetic.entity.OrderItem">
+            <result column="productid" property="product_id"></result>
+            <result column="num" property="num"></result>
+            <association property="product" javaType="com.wmy.cosmetic.entity.Product">
+                <id column="product_id" property="product_id"></id>
+                <result column="product_name" property="product_name"></result>
+                <result column="product_img" property="product_img"></result>
+                <result column="product_account" property="product_account"></result>
+                <result column="product_price" property="product_price"></result>
+                <result column="product_type" property="product_type"></result>
+                <result column="product_message" property="product_message"></result>
+            </association>
+        </collection>
+    </resultMap>
+    <select id="findOrderItem" resultMap="orderform">
+        select * from t_order a left join
+            (select * from t_order_item c left join t_product d on c.productid=d.product_id) b
+            on a.orderid=b.orderid where a.orderid=#{orderid}
+    </select>
+    <select id="saleMessage" resultType="com.wmy.cosmetic.entity.Product">
+        select * from  t_product a left join (select c.productid,d.enddt from t_order_item c left join t_order d on c.orderid=d.orderid) b
+        on a.product_id=b.productid
+    </select>
+    <select id="prodSellStatistics" parameterType="map" resultType="com.wmy.cosmetic.entity.Product">
+        SELECT
+            a.*,
+            count( b.productid ) saleNum
+        FROM
+            t_product a
+                LEFT JOIN ( SELECT c.productid, d.enddt FROM t_order_item c LEFT JOIN t_order d ON c.orderid = d.orderid ) b ON a.product_id = b.productid
+        <where>
+            <if test="startdt !=null ">
+                b.enddt <![CDATA[ >= ]]>  #{startdt}
+            </if>
+            <if test="enddt !=null">
+               and  b.enddt <![CDATA[ <= ]]> #{enddt}
+            </if>
+        </where>
+        GROUP BY
+            product_id
+        ORDER BY
+            saleNum
+        desc
+    </select>
+</mapper>

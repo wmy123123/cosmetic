@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wmy.cosmetic.mapper.PermissionMapper">
+
+    <insert id="save" parameterType="map">
+        insert into t_role_perm(roleid,permid) values
+        <foreach collection="permid" item="permid" separator=",">
+            (#{rolid},#{permid})
+        </foreach>
+    </insert>
+    <insert id="addRole" useGeneratedKeys="true" keyProperty="rolid">
+        insert into t_role(rolna,description) values(#{rolna},#{description})
+    </insert>
+    <delete id="deleteRole">
+        delete from t_role where rolid=#{rolid}
+    </delete>
+    <delete id="deleteRolePerms">
+        delete from t_role_perm where roleid=#{rolid}
+    </delete>
+    <resultMap id="roles"  type="com.wmy.cosmetic.entity.Role">
+        <id column="rolna" property="rolna"></id>
+        <result column="description" property="description"></result>
+        <collection property="permids" ofType="com.wmy.cosmetic.entity.Perm">
+            <id column="id" property="id"></id>
+            <result column="parentid" property="parentid"></result>
+            <result column="name" property="name"></result>
+            <result column="permission" property="permission"></result>
+            <result column="url" property="url"></result>
+            <result column="sort" property="sort"></result>
+        </collection>
+    </resultMap>
+    <select id="listAllPermissionByRoleId" resultType="com.wmy.cosmetic.entity.Perm">
+        SELECT
+            a.*
+        FROM
+            t_perm a
+                LEFT JOIN t_role_perm b ON a.id = b.permid
+                LEFT JOIN t_role c ON b.roleid = c.rolid
+        WHERE
+            c.rolid=#{roleId}
+    </select>
+    <select id="findRoleByRolna" resultType="com.wmy.cosmetic.entity.Role">
+        select * from t_role where rolna=#{rolna}
+    </select>
+</mapper>
