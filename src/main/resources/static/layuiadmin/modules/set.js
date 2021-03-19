@@ -16,7 +16,7 @@
     }), n.on("submit(setmyinfo)", function (t) {
         return e.msg(JSON.stringify(t.field)), !1
     });
-    var r = i("#LAY_avatarSrc");
+    var r = i("#demo1");
     s.render({
         url: "/api/upload/", elem: "#LAY_avatarUpload", done: function (t) {
             0 == t.status ? r.val(t.url) : e.msg(t.msg, {icon: 5})

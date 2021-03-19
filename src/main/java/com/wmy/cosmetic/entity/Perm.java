@@ -10,7 +10,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class Perm {
-    private int id;
+    private Integer id;
+    private Integer parentid;
     private String name;
     private String url;
+    private Integer type;
+    private String permission;
+    private Integer sort;
 }

@@ -4,8 +4,9 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public enum ResultCode {
-    //成功功状态码
-    SUCCESS(1,"成功"),
+    //交易成功
+    SUCCESS(1,"操作成功"),
+    ERROR(0,"操作失败"),
     PARAM_NOT_LOGGET_IN(2001,"账号不存在"),
     USER_ACCOUT_FORBIDDEN(2002,"账号已被禁用"),
     USER_NOT_EXIST(2003,"用户不存在"),

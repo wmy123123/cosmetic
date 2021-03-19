@@ -1,229 +1,315 @@
-
-
 <!DOCTYPE html>
 <html xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
-  <meta charset="utf-8">
-  <title>layuiAdmin 后台管理员</title>
-  <meta name="renderer" content="webkit">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
-  <link rel="stylesheet" th:href="@{/layuiadmin/layui/css/layui.css}" href="../../../layuiadmin/layui/css/layui.css" media="all">
-  <link rel="stylesheet" th:href="@{/layuiadmin/style/admin.css}" href="../../../layuiadmin/style/admin.css" media="all">
+    <meta charset="utf-8">
+    <title>layuiAdmin 后台管理员</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" th:href="@{/layuiadmin/layui/css/layui.css}" media="all">
+    <link rel="stylesheet" th:href="@{/layuiadmin/style/admin.css}" media="all">
 </head>
 </head>
 <body>
 
-  <div class="layui-fluid">   
+<div class="layui-fluid">
     <div class="layui-card">
-      <div class="layui-form layui-card-header layuiadmin-card-header-auto">
-        <div class="layui-form-item">
-          <div class="layui-inline">
-            <label class="layui-form-label">雇员编号</label>
-            <div class="layui-input-block">
-              <input type="text" id="uuid" name="uuid" placeholder="请输入" autocomplete="off" class="layui-input">
+        <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">工号</label>
+                    <div class="layui-input-block">
+                        <input type="text" id="uuid" name="uuid" placeholder="请输入" autocomplete="off"
+                               class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">职位</label>
+                    <div class="layui-input-block">
+                        <input type="text" id="position" name="position" placeholder="请输入" autocomplete="off"
+                               class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">姓名</label>
+                    <div class="layui-input-block">
+                        <input type="text" id="name" name="name" placeholder="请输入" autocomplete="off"
+                               class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-user-back-search">
+                        <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                    </button>
+                </div>
             </div>
-          </div>
-          <div class="layui-inline">
-            <label class="layui-form-label">姓名</label>
-            <div class="layui-input-block">
-              <input type="text" id="name" name="name" placeholder="请输入" autocomplete="off" class="layui-input">
-            </div>
-          </div>
-          <div class="layui-inline">
-            <button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-user-back-search">
-              <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
-            </button>
-          </div>
         </div>
-      </div>
-      
-      <div class="layui-card-body">
-        <table id="LAY-user-back-manage" lay-filter="LAY-user-back-manage"></table>  
-        <!--<script type="text/html" id="buttonTpl">
-          {{#  if(d.check == true){ }}
-            <button class="layui-btn layui-btn-xs">已审核</button>
-          {{#  } else { }}
-            <button class="layui-btn layui-btn-primary layui-btn-xs">未审核</button>
-          {{#  } }}
-        </script>-->
-        <script type="text/html" id="imgTpl">
-          <img style="display: inline-block; width: 50%; height: 100%;" src= {{ d.avatar }}>
-        </script>
-        <script type="text/html" id="table-useradmin-admin">
-          <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-          {{#  if(d.role == '超级管理员'){ }}
-            <a class="layui-btn layui-btn-disabled layui-btn-xs">删除</a>
-          {{#  } else { }}
-            <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
-          {{#  } }}
-        </script>
-      </div>
+
+        <div class="layui-card-body">
+            <table id="LAY-user-back-manage"  lay-filter="LAY-user-back-manage"></table>
+            <script type="text/html" id="toolbarAdmin">
+                <div class="layui-btn-container">
+                    <button class="layui-btn layui-btn-sm" lay-event="add">新增员工</button>
+                    <button class="layui-btn layui-btn-sm" lay-event="update">信息修改</button>
+                    <button class="layui-btn layui-btn-sm" lay-event="delete">批量删除</button>
+                    <button class="layui-btn layui-btn layui-btn layui-btn-primary layui-btn-sm" id="import">批量导入</button>
+                    <button class="layui-btn layui-btn layui-btn layui-btn-primary layui-btn-sm" id="export">批量导出</button>
+                </div>
+            </script>
+            <script type="text/html" id="checkboxTpl">
+                {{#  if(d.status == '0'){ }}
+                <input type="checkbox" name="lock" value="{{d.id}}" title="禁用" lay-filter="lockDemo">
+                {{#  } else { }}
+                <input type="checkbox" name="lock" value="{{d.id}}" title="禁用" lay-filter="lockDemo" checked>
+                {{#  } }}
+            </script>
+            <script type="text/html" id="imgTpl">
+                <img style="display: inline-block; width: 80%; height: 100%;" src={{ d.avatar }}>
+            </script>
+            <script type="text/html" id="table-useradmin-admin">
+                <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"><i
+                        class="layui-icon layui-icon-edit"></i>编辑</a>
+                {{#  if(d.position == 'admin'){ }}
+                <a class="layui-btn layui-btn-disabled layui-btn-xs"><i class="layui-icon layui-icon-delete"></i>删除</a>
+                {{#  } else { }}
+                <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i
+                        class="layui-icon layui-icon-delete"></i>删除</a>
+                {{#  } }}
+            </script>
+        </div>
     </div>
-  </div>
+</div>
 
-  <script th:src="@{/layuiadmin/layui/layui.js}"></script>
-  <script>
-  layui.config({
-    base: '../layuiadmin/' //静态资源所在路径
-  }).extend({
-    index: 'lib/index' //主入口模块
-  }).use(['index', 'useradmin', 'table'], function(){
-    var $ = layui.jquery
-    ,form = layui.form
-    ,table = layui.table;
-    
-    //监听搜索
-    form.on('submit(LAY-user-back-search)', function(data){
-      var uuid = $('#uuid');
-      var name = $('#name');
-      //执行重载
-      table.reload('LAY-user-back-manage', {
-        page:{
-          curr: 1 //重新从第 1 页开始
-        },
-        where:{
-          uuid:uuid.val(),
-          name:name.val(),
-        },
-        text: { //自定义文本，此处用法--》当返回数据为空时的异常提示
-          none: '搜索结果为空' //默认：无数据。注：该属性为 layui 2.2.5 开始新增
-        }
-      });
-    });
-    //监听头工具栏事件
-    table.on('toolbar(LAY-user-back-manage)', function(obj){
-      var checkStatus = table.checkStatus(obj.config.id)
-              ,data = checkStatus.data; //获取选中的数据
-      switch(obj.event){
-        case 'add':
-          layer.open({
-            type: 2
-            ,title: '添加员工'
-            ,content: '/page/adminform'
-            ,area: ['450px', '450px']
-            ,btn: ['确定', '取消']
-            ,yes: function(index, layero){
-              var iframeWindow = window['layui-layer-iframe'+ index]
-                      ,submitID = 'LAY-user-add-submit'
-                      ,submit = layero.find('iframe').contents().find('#'+ submitID);
-
-              //监听提交
-              iframeWindow.layui.form.on('submit('+ submitID +')', function(data){
-                var field = data.field; //获取提交的字段
-                //提交 Ajax 成功后，静态更新表格中的数据
-                $.ajax({
-                  url: "/user/addEmployee",
-                  type: "POST",
-                  data: field,
-                  dataType: 'json',
-                  // contentType : 'application/json;charset=utf-8',
-                  success: function (res) {
-                    if (res.code==2010) {
-                      table.reload('LAY-user-back-manage'); //数据刷新
-                      layer.close(index); //关闭弹层
-                      layer.msg(res.msg);
-                    } else {
-                      layer.msg(res.msg);
-                    }
-                  }
-                })
-              });submit.trigger('click');
-            }
-          });
-          break;
-        case 'update':
-          if(data.length === 0){
-            layer.msg('请选择一行');
-          } else if(data.length > 1){
-            layer.msg('只能同时编辑一个');
-          } else {
-            layer.alert('编辑 [id]：'+ checkStatus.data[0].id);
-          }
-          break;
-        case 'delete':
-          if(data.length === 0){
-            layer.msg('请选择一行');
-          } else {
-            layer.msg('删除');
-          }
-          break;
-      };
-    });
-  
-    //事件
-    var active = {
-      batchdel: function(){
-        var checkStatus = table.checkStatus('LAY-user-back-manage')
-        ,checkData = checkStatus.data; //得到选中的数据
-
-        if(checkData.length === 0){
-          return layer.msg('请选择数据');
-        }
-        
-        layer.prompt({
-          formType: 1
-          ,title: '敏感操作，请验证口令'
-        }, function(value, index){
-          layer.close(index);
-          
-          layer.confirm('确定删除吗？', function(index) {
-            
-            //执行 Ajax 后重载
-            /*
-            admin.req({
-              url: 'xxx'
-              //,……
-            });
-            */
-            table.reload('LAY-user-back-manage');
-            layer.msg('已删除');
-          });
-        }); 
-      }
-      ,add: function(){
-        layer.open({
-          type: 2
-          ,title: '添加员工'
-          ,content: '/page/adminform'
-          ,area: ['450px', '450px']
-          ,btn: ['确定', '取消']
-          ,yes: function(index, layero){
-            var iframeWindow = window['layui-layer-iframe'+ index]
-            ,submitID = 'LAY-user-add-submit'
-            ,submit = layero.find('iframe').contents().find('#'+ submitID);
-
-            //监听提交
-            iframeWindow.layui.form.on('submit('+ submitID +')', function(data){
-              var field = data.field; //获取提交的字段
-              //提交 Ajax 成功后，静态更新表格中的数据
-              $.ajax({
-                url: "/user/addEmployee",
-                type: "POST",
-                data: field,
-                dataType: 'json',
-                // contentType : 'application/json;charset=utf-8',
-                success: function (res) {
-                  if (res.code==2010) {
-                    table.reload('LAY-user-back-manage'); //数据刷新
-                    layer.close(index); //关闭弹层
+<script th:src="@{/layuiadmin/layui/layui.js}"></script>
+<script>
+    layui.config({
+        base: '../layuiadmin/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index' //主入口模块
+    }).use(['index', 'useradmin', 'table', 'upload'], function () {
+        var $ = layui.jquery
+            , form = layui.form
+            , table = layui.table,
+            upload = layui.upload;
+        document.getElementById("")
+        upload.render({
+            elem: '#uploadFile'
+            , url: '/order/importExcel' //改成您自己的上传接口
+            , accept: 'file' //普通文件
+            , done: function (res) {
+                if (res === 0) {
                     layer.msg(res.msg);
-                  } else {
+                } else {
                     layer.msg(res.msg);
-                  }
                 }
-              })
-            });submit.trigger('click');
-          }
-        }); 
-      }
-    }  
-    $('.layui-btn.layuiadmin-btn-admin').on('click', function(){
-      var type = $(this).data('type');
-      active[type] ? active[type].call(this) : '';
+            }
+        });
+        //监听锁定操作
+        form.on('checkbox(lockDemo)', function (obj) {
+            debugger
+            $.ajax({
+                url: "/user/updateStatus?id=" + obj.value,
+                type: "GET",
+                dataType: 'json',
+                success: function (res) {
+                    if (res.code == 0) {
+                        layer.tips('用户已锁定', obj.othis);
+                    } else if (res.code == 2) {
+                        layer.tips('用户已解锁', obj.othis);
+                    } else {
+                        layer.msg(res.msg);
+                    }
+                }
+            });
+        });
+         var btn = document.getElementById("export");
+          btn.addEventListener('click',function () {
+              location.href='/user/exportExcel';
+            // $.ajax({
+            //     url: "/user/exportExcel",
+            //     type: "GET",
+            //     data: '',
+            //     dataType: 'json',
+            //     // contentType : 'application/json;charset=utf-8',
+            //     success: function (res) {
+            //         if (res.code == 0) {
+            //             layer.msg(res.msg);
+            //         } else {
+            //             layer.msg(res.msg);
+            //         }
+            //     }
+            // })
+        })
+        upload.render({
+            elem: '#import'
+            ,url: '/user/importExcel' //改成您自己的上传接口
+            ,accept: 'file' //普通文件
+            ,done: function(res){
+                if (res===0){
+                    layer.msg(res.msg);
+                }else{
+                    layer.msg(res.msg);
+                }
+            }
+        });
+        //监听搜索
+        form.on('submit(LAY-user-back-search)', function (data) {
+            var uuid = $('#uuid');
+            var name = $('#name');
+            var position = $('#position')
+            //执行重载
+            table.reload('LAY-user-back-manage', {
+                page: {
+                    curr: 1 //重新从第 1 页开始
+                },
+                where: {
+                    uuid: uuid.val(),
+                    name: name.val(),
+                    position: position.val()
+                },
+                text: { //自定义文本，此处用法--》当返回数据为空时的异常提示
+                    none: '搜索结果为空' //默认：无数据。注：该属性为 layui 2.2.5 开始新增
+                }
+            });
+        });
+        //监听头工具栏事件
+        table.on('toolbar(LAY-user-back-manage)', function (obj) {
+            var checkStatus = table.checkStatus(obj.config.id)
+                , data = checkStatus.data; //获取选中的数据
+            switch (obj.event) {
+                case 'add':
+                    layer.open({
+                        type: 2
+                        , title: '添加员工'
+                        , content: '/page/adminform'
+                        , area: ['800px', '500px']
+                        , btn: ['确定', '取消']
+                        , yes: function (index, layero) {
+                            var iframeWindow = window['layui-layer-iframe' + index]
+                                , submitID = 'LAY-user-add-submit'
+                                , submit = layero.find('iframe').contents().find('#' + submitID);
+                            //监听提交
+                            iframeWindow.layui.form.on('submit(' + submitID + ')', function (data) {
+                                var field = data.field; //获取提交的字段
+                                //提交 Ajax 成功后，静态更新表格中的数据
+                                $.ajax({
+                                    url: "/user/addEmployee",
+                                    type: "POST",
+                                    data: field,
+                                    dataType: 'json',
+                                    // contentType : 'application/json;charset=utf-8',
+                                    success: function (res) {
+                                        if (res.code > 0) {
+                                            table.reload('LAY-user-back-manage'); //数据刷新
+                                            layer.close(index); //关闭弹层
+                                            layer.msg(res.msg);
+                                        } else {
+                                            layer.msg(res.msg);
+                                        }
+                                    }
+                                })
+                            });
+                            submit.trigger('click');
+                        }
+                    });
+                    break;
+                case 'update':
+                    if (data.length === 0) {
+                        layer.msg('请选择一行');
+                    } else if (data.length > 1) {
+                        layer.msg('只能同时编辑一个');
+                    } else {
+                        layer.open({
+                            type: 2
+                            , title: '修改员工信息'
+                            , content: "/user/updateEmplform?id=" + data[0].id
+                            , area: ['800px', '500px']
+                            , btn: ['确定', '取消']
+                            , yes: function (index, layero) {
+                                var iframeWindow = window['layui-layer-iframe' + index]
+                                    , submitID = 'LAY-user-back-submit'
+                                    , submit = layero.find('iframe').contents().find('#' + submitID);
+
+                                //监听提交
+                                iframeWindow.layui.form.on('submit(' + submitID + ')', function (data) {
+                                    var field = data.field; //获取提交的字段
+                                    //提交 Ajax 成功后，静态更新表格中的数据
+                                    $.ajax({
+                                        url: "/user/updateEmployee",
+                                        type: "POST",
+                                        data: field,
+                                        dataType: 'json',
+                                        // contentType : 'application/json;charset=utf-8',
+                                        success: function (res) {
+                                            if (res.code == 2008) {
+                                                table.reload('LAY-user-back-manage'); //数据刷新
+                                                layer.close(index); //关闭弹层
+                                                layer.msg(res.msg);
+                                            } else {
+                                                layer.msg(res.msg);
+                                            }
+                                        }
+                                    })
+                                });
+                                submit.trigger('click');
+                            }
+                        });
+                    }
+                    break;
+                case 'delete':
+                    if (data.length === 0) {
+                        layer.msg('请选择一行');
+                    } else {
+                        layer.prompt({
+                            formType: 0
+                            , title: '敏感操作，请输入"立即删除"'
+                        }, function (value, index) {
+                            layer.close(index);
+                            if (value == '立即删除') {
+                                var uuids = [];
+                                data.forEach(function (i, index) {
+                                    uuids.push(i.uuid);
+                                });
+                                layer.confirm('确定删除吗？', function (index) {
+                                    //执行 Ajax 后重载
+                                    debugger
+                                    $.ajax({
+                                        url: '/user/deleteByEmpId',
+                                        type: "POST",
+                                        data: {
+                                            uuids: uuids
+                                        },
+                                        dataType: 'json',
+                                        // contentType : 'application/json;charset=utf-8',
+                                        success: function (res) {
+                                            if (res.code == 0) {
+                                                table.reload('LAY-user-back-manage'); //数据刷新
+                                                layer.msg(res.msg);
+                                            } else {
+                                                layer.msg(res.msg);
+                                            }
+                                        }
+                                    });
+                                });
+                            } else {
+                                layer.msg('验证口令错误');
+                            }
+                        });
+                    }
+                    break;
+                case 'export':
+                    location.href = "/user/exportExcel"
+                    break;
+            }
+            ;
+        });
+        $('.layui-btn.layuiadmin-btn-admin').on('click', function () {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
     });
-  });
-  </script>
+</script>
 </body>
 </html>
 

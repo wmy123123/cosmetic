@@ -62,6 +62,7 @@
             }, {name: "平均访问量", type: "line", data: [870, 850, 850, 950, 1050, 1e3, 980, 1150, 1e3, 1300, 1150, 1e3]}]
         }], i = e("#LAY-index-pagetwo").children("div"), n = function (e) {
             l[e] = a.init(i[e], layui.echartsTheme), l[e].setOption(t[e]), window.onresize = l[e].resize
+
         };
         i[0] && n(0)
     }), layui.use(["carousel", "echarts"], function () {

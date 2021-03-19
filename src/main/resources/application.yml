@@ -4,6 +4,9 @@ spring:
     url: jdbc:mysql://localhost:3306/cosmetic?serverTimezone=GMT%2B8
     username: root
     password: 123456
+server:
+  port: 8443
+
 logging:
   level:
     root: info
@@ -11,7 +14,9 @@ logging:
     name: d:/idea_workplace/cosmeticResources/logging/blog-dev.log
 project:
   path:
+    domain: http://localhost:8443
     avatarImage: d:/idea_workplace/cosmeticResources/avatarImage
+    avatarImage2: d:/idea_workplace/cosmeticResources/avatarImage2
     productImagepath: d:/idea_workplace/cosmeticResources/productImage
-
+    productImagepath2: d:/idea_workplace/cosmeticResources/productImage2
 

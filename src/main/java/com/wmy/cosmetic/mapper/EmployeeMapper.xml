@@ -4,18 +4,36 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wmy.cosmetic.mapper.EmployeeMapper">
     <update id="updateEmploy" parameterType="com.wmy.cosmetic.entity.Employee">
-        update t_employee set phone=#{phone},position=#{position},password=#{password},salt=#{salt} where id=#{id}
+        update t_employee set phone=#{phone},position=#{position} where id=#{id}
     </update>
     <update id="updatePassword">
-        update t_employee set password=#{password} where id=#{id}
+        update t_employee set password=#{password} where uuid=#{uuid}
+    </update>
+    <update id="updateStatus">
+        update t_employee set resignationtime=#{date},status='1' where uuid=#{uuid}
+    </update>
+    <update id="updateEmploy1">
+        update t_employee set name=#{name},phone=#{phone},sex=#{sex} where uuid=#{uuid}
+    </update>
+    <update id="updateAvatarImgPath">
+        update t_employee set avatar=#{imgUrl} where uuid=#{uuid}
+    </update>
+    <update id="updateStatus1">
+        update t_employee set resignationtime=null,status='0' where uuid=#{uuid}
     </update>
     <delete id="deleteEmployee">
         delete from t_employee where id=#{id}
     </delete>
+    <delete id="deleteEmpById">
+        delete from t_employee where uuid in
+        <foreach collection="list" item="uuid" open="(" separator="," close=")" >
+               #{uuid}
+        </foreach>
+    </delete>
     <select id="findByUsernameAndPassword" parameterType="String" resultType="com.wmy.cosmetic.entity.Employee">
         SELECT * FROM t_employee WHERE username=#{username}
     </select>
-    <select id="findEmployeeList" parameterType="String"  resultType="com.wmy.cosmetic.entity.Employee">
+    <select id="findEmployeeList" parameterType="map"  resultType="com.wmy.cosmetic.entity.Employee">
         SELECT * From t_employee
         <where>
             <if test="uuid !=null and uuid !=''">
@@ -24,12 +42,18 @@
             <if test="name !=null and name !=''">
                 and name=#{name}
             </if>
+            <if test="position !=null and position !=''">
+                and position=#{position}
+            </if>
         </where>
     </select>
 
     <insert id="addEmployee" parameterType="com.wmy.cosmetic.entity.Employee">
-        INSERT INTO t_employee(id,uuid,username,password,name,entrytime,avatar,salt,position,phone)
-        values (null,#{uuid},#{username},#{password},#{name},#{entrytime},#{avatar},#{salt},#{position},#{phone})
+        INSERT INTO t_employee(id,uuid,username,password,name,sex,entrytime,avatar,salt,position,salary,phone,status)
+        values (null,#{uuid},#{username},#{password},#{name},#{sex},#{entrytime},#{avatar},#{salt},#{position},#{salary},#{phone},#{status})
+    </insert>
+    <insert id="insertProductType">
+        insert into product_type(product_id,product_name) VALUES(#{id},#{name}) ON duplicate KEY UPDATE product_name = #{name}
     </insert>
 
 
@@ -37,16 +61,17 @@
         <id column="uid" property="id"/>
         <result column="username" property="username"/>
         <collection  property="roles" javaType="list" ofType="com.wmy.cosmetic.entity.Role">
-            <id column="id" property="id"/>
-            <result column="rname" property="name"/>
+            <id column="id" property="rolid"/>
+            <result column="rname" property="rolna"/>
         </collection>
     </resultMap>
-    <select id="findRolesByEmployeeName" parameterType="string" resultMap="employeeMap">
-        SELECT e.id eid,e.name,r.id,r.name rname
-        FROM t_employee e
-	    LEFT JOIN t_employee_role er ON e.id = er.employeeid
-	    LEFT JOIN t_role r ON er.roleid = r.id
-        WHERE e.username = #{username}
+    <select id="findPermsByEmployeeName" parameterType="string" resultType="com.wmy.cosmetic.entity.Perm">
+        SELECT a.*
+        FROM t_perm a
+                 LEFT JOIN t_role_perm b ON a.id = b.permid
+                 LEFT JOIN t_role c ON b.roleid = c.rolid
+                 LEFT JOIN t_employee d ON c.rolna = d.position
+        WHERE username = #{username}
     </select>
 
     <select id="findPermsByRoleId" parameterType="int" resultType="com.wmy.cosmetic.entity.Perm">
@@ -54,5 +79,22 @@
     </select>
     <select id="findEmployeeById" resultType="com.wmy.cosmetic.entity.Employee">
         select * from t_employee where id=#{id}
+    </select>
+    <select id="findRole" resultType="com.wmy.cosmetic.entity.Role">
+        select rolid,rolna form t_role ;
+    </select>
+    <select id="findAllRole" resultType="com.wmy.cosmetic.entity.Role">
+        select rolid,rolna from t_role;
+    </select>
+    <select id="findEmployeeByUuid" resultType="com.wmy.cosmetic.entity.Employee">
+        select * from t_employee where uuid=#{uuid}
+    </select>
+    <select id="roleList" resultType="com.wmy.cosmetic.entity.Role">
+        select * from t_role
+        <where>
+            <if test="id != null">
+                rolid=#{id}
+            </if>
+        </where>
     </select>
 </mapper>

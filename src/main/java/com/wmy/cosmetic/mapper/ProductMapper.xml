@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wmy.cosmetic.mapper.ProductMapper">
+    <update id="updateProduct" parameterType="com.wmy.cosmetic.entity.Product">
+        update t_product set product_name=#{product_name},
+                             product_account=#{product_account},product_price=#{product_price},
+                             product_type=#{product_type},product_message=#{product_message} where product_id=#{product_id}
+    </update>
+    <update id="updateProImg">
+        update t_product set product_img=#{product_img} where product_id=#{product_id}
+    </update>
+    <delete id="delete">
+        delete from ${name} where entrytime= #{time}
+    </delete>
+    <delete id="deleteProduct">
+        delete from t_product where product_id=#{product_id}
+    </delete>
+    <select id="findProductList"  resultType="com.wmy.cosmetic.entity.Product">
+         select * from t_product
+        <where>
+            <if test="product_id !=null and product_id !=''">
+                and product_id=#{product_id}
+            </if>
+            <if test="product_name !=null and product_name !=''">
+                and product_name=#{product_name}
+            </if>
+            <if test="product_type !=null and product_type !=''">
+                and product_type=#{product_type}
+            </if>
+        </where>
+    </select>
+    <select id="findProductById" parameterType="int" resultType="com.wmy.cosmetic.entity.Product">
+        select * from t_product where product_id=#{product_id}
+    </select>
+    <select id="account" resultType="com.wmy.cosmetic.entity.Product">
+        select product_id,product_name,product_account from t_product where product_account <![CDATA[ <= ]]> 10 order by product_account
+    </select>
+    <select id="accountaccountWeekend" resultType="java.lang.Double">
+        SELECT
+        sum( payment )
+        FROM
+        t_order a
+        WHERE
+        a.createdt >= #{startdt} and a.createdt <![CDATA[ <= ]]> #{entdt}
+        GROUP BY
+        DAY ( a.createdt )
+        ORDER BY
+        DAY ( a.createdt )
+    </select>
+    <select id="ordernum" resultType="java.lang.Integer">
+        select count(*) from t_order
+    </select>
+    <select id="productnum" resultType="java.lang.Integer">
+        select count(*) from t_product
+    </select>
+    <select id="employeenum" resultType="java.lang.Integer">
+        select count(*) from t_employee
+    </select>
+    <select id="incomeWithYear" resultType="java.lang.Double">
+        select sum(payment) from t_order where createdt >#{startdt} and createdt <![CDATA[ <= ]]> #{enddt}
+    </select>
+    <select id="productTypeList" resultType="com.wmy.cosmetic.entity.ProductType">
+        select * from t_producttype
+    </select>
+    <insert id="insertProduct" parameterType="com.wmy.cosmetic.entity.Product">
+        insert into  t_product(product_id,product_name,product_img,product_account,product_price,product_type,product_message)
+        values (null,#{product_name},#{product_img},#{product_account},#{product_price},#{product_type},#{product_message})
+    </insert>
+</mapper>

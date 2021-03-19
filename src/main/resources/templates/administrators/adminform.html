@@ -16,7 +16,7 @@
     <div class="layui-form-item">
       <label class="layui-form-label">账号</label>
       <div class="layui-input-inline">
-        <input type="text" name="username" lay-verify="required" placeholder="请输入用户名" autocomplete="off" class="layui-input">
+        <input type="text" name="username"  placeholder="请输入用户名" autocomplete="off" class="layui-input">
       </div>
     </div>
       <div class="layui-form-item">
@@ -47,12 +47,18 @@
     <div class="layui-form-item">
       <label class="layui-form-label">职位</label>
       <div class="layui-input-inline">
-        <select name="position" lay-verify="required" lay-search="">
-          <option value="普通员工">普通员工</option>
-          <option value="总经理">总经理</option>
+        <select name="position"  lay-verify="required" lay-search="">
+          <option th:each="roles : ${roles}" th:value="${roles.rolna}" th:text="${roles.rolna}">普通员工</option>
         </select>
       </div>
-    </div> 
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">工资</label>
+      <div class="layui-input-inline">
+        <input type="text" name="salary" lay-verify="salary" placeholder="保留两位小数" autocomplete="off" class="layui-input">
+
+      </div>
+    </div>
     <div class="layui-form-item layui-hide">
       <input type="button" lay-submit lay-filter="LAY-user-add-submit" id="LAY-user-add-submit" value="确认">
     </div>

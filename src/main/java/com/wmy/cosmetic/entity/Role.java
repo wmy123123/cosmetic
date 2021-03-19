@@ -11,12 +11,8 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class Role {
-    private int id;
-    private String name;
-    private List<Perm> perms;
-
-    //定义权限集合
-    public List<Perm> getPerms() {
-        return perms;
-    }
+    private int rolid;
+    private String rolna;
+    private List<Long> permids;
+    private String description;
 }

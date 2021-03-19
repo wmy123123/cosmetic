@@ -1,6 +1,10 @@
 package com.wmy.cosmetic.config;
 
 import at.pollux.thymeleaf.shiro.dialect.ShiroDialect;
+import com.alibaba.fastjson.JSONArray;
+import com.wmy.cosmetic.entity.Perm;
+import com.wmy.cosmetic.entity.Result;
+import com.wmy.cosmetic.service.ServiceImpl.PermissionService;
 import com.wmy.cosmetic.shiro.realms.Realms;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.realm.Realm;
@@ -8,13 +12,17 @@ import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.web.servlet.SimpleCookie;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 @Configuration
 public class shiroConfig {
+    @Autowired(required = false)
+    PermissionService permissionService;
     //创建shiroFilter
     @Bean
     public ShiroFilterFactoryBean getShiroFilterFactoryBean(DefaultWebSecurityManager defaultWebSecurityManager){
@@ -29,15 +37,15 @@ public class shiroConfig {
          *           role:拥有某个角色权限才能使用
          */
         Map<String,String> filterMap=new LinkedHashMap<>();
-        filterMap.put("/**","anon");
-//        filterMap.put("/page/regist","anon");
-//        filterMap.put("/user/regist","anon");
-//        filterMap.put("/user/login","anon");
-//        filterMap.put("/user/kaptcha/**","anon");
-//        filterMap.put("/layuiadmin/**","anon");
-//        filterMap.put("/**","user");
+        filterMap.put("/page/login","anon");
+        filterMap.put("/static/**","anon");
+        List<Perm> perms = permissionService.permsList();
+        perms.forEach(perm -> {
+            filterMap.put(perm.getUrl(),"perms["+perm.getPermission()+"]");
+        });
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterMap);
-        shiroFilterFactoryBean.setLoginUrl("/page/login");
+        shiroFilterFactoryBean.setLoginUrl("/user/logout");
+        shiroFilterFactoryBean.setUnauthorizedUrl("/page/unAuthorize");
         return shiroFilterFactoryBean;
     }
     //创建安全管理器
@@ -84,6 +92,7 @@ public class shiroConfig {
         return simpleCookie;
     }
     //整合ShiroDialect:用来整合shiro thymleaf
+    @Bean
     public ShiroDialect getShiroDialect(){
         return new ShiroDialect();
     }

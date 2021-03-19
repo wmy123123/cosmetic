@@ -1,6 +1,7 @@
 package com.wmy.cosmetic.shiro.realms;
 
 import com.wmy.cosmetic.entity.Employee;
+import com.wmy.cosmetic.entity.Perm;
 import com.wmy.cosmetic.service.EmployeeService;
 import com.wmy.cosmetic.utils.ApplicationContextUtils;
 import org.apache.shiro.SecurityUtils;
@@ -10,12 +11,10 @@ import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.PrincipalCollection;
-import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ByteSource;
 import org.springframework.util.ObjectUtils;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import java.util.List;
 
 public class Realms extends AuthorizingRealm {
 
@@ -25,12 +24,13 @@ public class Realms extends AuthorizingRealm {
         String primaryPrincipal = (String) principalCollection.getPrimaryPrincipal();
         //根据主身份信息获取角色和权限信息
         EmployeeService employeeService = (EmployeeService) ApplicationContextUtils.getBean("employeeService");
-        Employee employee = employeeService.findRolesByEmployeeName(primaryPrincipal);
+        List<Perm> perms = employeeService.findPermsByEmployeeName(primaryPrincipal);
         //授予角色信息
-        if(!ObjectUtils.isEmpty(employee.getRoles())){
+        if(!ObjectUtils.isEmpty(perms)){
             SimpleAuthorizationInfo info =new SimpleAuthorizationInfo();
-            employee.getRoles().forEach(role -> {
-                info.addRole(role.getName());
+            perms.forEach(perm -> {
+                info.addStringPermission(perm.getPermission());
+//                info.addRole(perm.getPermission());
             });
             return info;
         }
@@ -46,6 +46,7 @@ public class Realms extends AuthorizingRealm {
             return null;
         }
         Session session = SecurityUtils.getSubject().getSession();
+        session.setTimeout(3600*24*7);
         session.setAttribute("user",employee);
         return new SimpleAuthenticationInfo(employee.getUsername(),employee.getPassword(), ByteSource.Util.bytes(employee.getSalt()),this.getName());
     }

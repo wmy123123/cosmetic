@@ -13,13 +13,18 @@ public class kaptcha {
     @Bean
     public Producer kaptcherProducer() {
         Properties properties = new Properties();
-        properties.setProperty("kaptcha.image.width", "100");
-        properties.setProperty("kaptcha.image.width", "100");
-        properties.setProperty("kaptcha.textproducer.font.size", "28");
-        properties.setProperty("kaptcha.textproducer.font.color", "0,0,0");
+        properties.setProperty("kaptcha.image.width", "120");
+        properties.setProperty("kaptcha.border.color", "242,242,242");
+        properties.setProperty("kaptcha.noise.color", "255,87,34");
+        properties.setProperty("kaptcha.obscurificator.impl", "com.google.code.kaptcha.impl.WaterRipple");
+        properties.setProperty("kaptcha.textproducer.font.size", "30");
+        properties.setProperty("kaptcha.textproducer.font.names", "Arial");
+        properties.setProperty("kaptcha.textproducer.font.color", "0,150,136");
+        properties.setProperty("kaptcha.background.clear.to", "242,242,242");
+        properties.setProperty("kaptcha.background.clear.from", "242,242,242");
         properties.setProperty("kaptcha.textproducer.char.string", "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ");
         properties.setProperty("kaptcha.textproducer.char.length", "4");
-        properties.setProperty("kaptcha.noise.impl", "com.google.code.kaptcha.impl.NoNoise");
+        properties.setProperty("kaptcha.noise.impl", "com.google.code.kaptcha.impl.DefaultNoise");
 
         DefaultKaptcha kaptcha = new DefaultKaptcha();
         Config config = new Config(properties);

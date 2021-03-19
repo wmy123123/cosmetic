@@ -4,17 +4,32 @@ import com.wmy.cosmetic.entity.Employee;
 import com.wmy.cosmetic.entity.Perm;
 import com.wmy.cosmetic.entity.Role;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public interface EmployeeMapper {
     Employee findByUsernameAndPassword(String username);
-    List<Employee> findEmployeeList(Integer uuid,String name);
+    List<Employee> findEmployeeList(Map<String, Object> param);
     int addEmployee(Employee employee);
-    Employee findRolesByEmployeeName(String username);
+    List<Perm> findPermsByEmployeeName(String username);
     Employee findEmployeeById(Integer id);
+    Employee findEmployeeByUuid(String uuid);
+    void updateAvatarImgPath(String uuid,String imgUrl);
     int updateEmploy(Employee employee);
+    void updateEmploy1(Employee employee);
     int deleteEmployee(Integer id);
-    int updatePassword(Integer id,String password);
+    int updatePassword(String uuid,String password);
+    //从职位表中查出所有职位信息
+    List<Role> findRole();
     //根据角色id查询权限集合
     List<Perm> findPermsByRoleId(int id);
+    //测试
+    void insertProductType(int id,String name);
+    void deleteEmpById(List<String> uuids);
+    List<Role> findAllRole();
+    //修改员工离职状态
+    void updateStatus(String uuid, Date date);
+    void updateStatus1(String uuid, Date date);
+    List<Role> roleList(Integer id);
 }
