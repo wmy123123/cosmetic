@@ -15,7 +15,7 @@
 <body>
 
 <div class="layui-fluid">
-    <div class="layui-card layui-col-sm6">
+    <div class="layui-card">
         <div class="layui-form layui-card-header layuiadmin-card-header-auto">
             <div class="layui-form-item">
                 <div class="layui-inline">
@@ -42,13 +42,15 @@
 
         <div class="layui-card-body">
             <table class="layui-hide" id="test2" lay-filter="test2"></table>
-        </div>
-    </div>
-    <div class="layui-card layui-col-sm5" style="margin-left: 15px;height: 600px">
-        <div class="layui-carousel layadmin-carousel layadmin-dataview" data-anim="fade" lay-filter="LAY-index-pagetwo">
-            <div carousel-item id="LAY-index-pagetwo">
-                <div><i class="layui-icon layui-icon-loading1 layadmin-loading"></i></div>
-            </div>
+            <script type="text/html" id="producttype">
+                {{#  if(d.product_type == '1'){ }}
+                <span>香水</span>
+                {{#  } else if(d.product_type == '2') { }}
+                <span>面膜</span>
+                {{#  } else if(d.product_type == '3') { }}
+                <span>口红</span>
+                {{#  } }}
+            </script>
         </div>
     </div>
 </div>
@@ -79,16 +81,16 @@
                 [
                     {field: "product_id", title: "商品编号", sort: !0},
                     {field: "product_name", title: "商品名称"},
-                    {field: "product_type", title: "商品类别", templet: "#product_type"},
+                    {field: "product_type", title: "商品类别", templet: "#producttype"},
                     {field: "product_price", title: "商品价格"},
+                    {field: "product_message", title: "商品信息"},
                     {field: "product_account", width: 100, title: "库存数量", style: 'color: #01AAED'},
                     {field: "saleNum", width: 100, title: "销售数量", style: 'color: red;'},
                 ]
             ],
             page: !0,
             limit: 30,
-            height:"full-180",
-            text: "对不起，加载出现异常！"
+            height:"full-150",
         }), table.on("tool(test2)", function (e) {
             var datas = e.data;
             if ("edit" === e.event) {

@@ -70,6 +70,6 @@ public class PermissionService {
     }
 
     public List<Perm> permsList(){
-       return permissionMapper.listAllPermission();
+       return permissionMapper.listAlpermission();
     }
 }

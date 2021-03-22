@@ -13,6 +13,7 @@ public interface PermissionMapper {
     @Select("select * from t_perm")
     List<Perm> listAllPermission();
 
+    List<Perm> listAlpermission();
 
     List<Perm> listAllPermissionByRoleId(Integer roleId);
 

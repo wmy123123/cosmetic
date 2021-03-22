@@ -12,6 +12,9 @@ import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.ByteSource;
+import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.context.annotation.Bean;
 import org.springframework.util.ObjectUtils;
 
 import java.util.List;
@@ -46,7 +49,6 @@ public class Realms extends AuthorizingRealm {
             return null;
         }
         Session session = SecurityUtils.getSubject().getSession();
-        session.setTimeout(3600*24*7);
         session.setAttribute("user",employee);
         return new SimpleAuthenticationInfo(employee.getUsername(),employee.getPassword(), ByteSource.Util.bytes(employee.getSalt()),this.getName());
     }

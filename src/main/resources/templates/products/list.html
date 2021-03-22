@@ -68,7 +68,7 @@
             </script>
             <script type="text/html" id="table-useradmin-webuser">
                 <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>编辑</a>
-                <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="layui-icon layui-icon-delete">删除</i></a>
+                <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="layui-icon layui-icon-delete"></i>删除</a>
             </script>
         </div>
     </div>
@@ -111,42 +111,46 @@
                 , data = checkStatus.data; //获取选中的数据
             switch (obj.event) {
                 case 'add':
-                    layer.open({
-                        type: 2
-                        , title: '添加商品'
-                        , content: '/page/addProduct'
-                        , area: ['1000px', '600px']
-                        , btn: ['确定', '取消']
-                        , yes: function (index, layero) {
-                            var iframeWindow = window['layui-layer-iframe' + index]
-                                , submitID = 'LAY-product-add-submit'
-                                , submit = layero.find('iframe').contents().find('#' + submitID);
+                    var ii = layer.load();
+                    setTimeout(function () {
+                        layer.close(ii);
+                        layer.open({
+                            type: 2
+                            , title: '添加商品'
+                            , content: '/page/addProduct'
+                            , area: ['1000px', '600px']
+                            , btn: ['确定', '取消']
+                            , yes: function (index, layero) {
+                                var iframeWindow = window['layui-layer-iframe' + index]
+                                    , submitID = 'LAY-product-add-submit'
+                                    , submit = layero.find('iframe').contents().find('#' + submitID);
 
-                            //监听提交
-                            iframeWindow.layui.form.on('submit(' + submitID + ')', function (data) {
-                                debugger;
-                                var field = data.field; //获取提交的字段
-                                //提交 Ajax 成功后，静态更新表格中的数据
-                                $.ajax({
-                                    url: "/product/addProduct",
-                                    type: "POST",
-                                    data: field,
-                                    dataType: 'json',
-                                    // contentType : 'application/json;charset=utf-8',
-                                    success: function (res) {
-                                        if (res.code == 0) {
-                                            table.reload('LAY-product-back-manage'); //数据刷新
-                                            layer.close(index); //关闭弹层
-                                            layer.msg(res.msg);
-                                        } else {
-                                            layer.msg(res.msg);
+                                //监听提交
+                                iframeWindow.layui.form.on('submit(' + submitID + ')', function (data) {
+                                    debugger;
+                                    var field = data.field; //获取提交的字段
+                                    //提交 Ajax 成功后，静态更新表格中的数据
+                                    $.ajax({
+                                        url: "/product/addProduct",
+                                        type: "POST",
+                                        data: field,
+                                        dataType: 'json',
+                                        // contentType : 'application/json;charset=utf-8',
+                                        success: function (res) {
+                                            if (res.code == 0) {
+                                                table.reload('LAY-product-back-manage'); //数据刷新
+                                                layer.close(index); //关闭弹层
+                                                layer.msg(res.msg, {icon: 6, anim: 3});
+                                            } else {
+                                                layer.msg(res.msg, {icon: 5, anim: 3});
+                                            }
                                         }
-                                    }
-                                })
-                            });
-                            submit.trigger('click');
-                        }
-                    });
+                                    })
+                                });
+                                submit.trigger('click');
+                            }
+                        });
+                    }, 500);
                     break;
                 case 'update':
                     if (data.length === 0) {

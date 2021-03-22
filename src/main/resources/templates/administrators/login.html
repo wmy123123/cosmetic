@@ -82,7 +82,11 @@
         })
         return false;
       });
-
+      $(document).ready(function () {
+        if (window != top) {
+          top.location.href = location.href;
+        }
+      });
       $(document).on("click",'#LAY-user-get-vercode', function(){
          this.src = "/user/kaptcha/" + (new Date).getTime()
       });

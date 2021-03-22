@@ -5,6 +5,8 @@ import com.wmy.cosmetic.entity.Role;
 import com.wmy.cosmetic.service.EmployeeService;
 import com.wmy.cosmetic.service.ProductService;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.annotation.Logical;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

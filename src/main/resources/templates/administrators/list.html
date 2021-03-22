@@ -47,14 +47,16 @@
         </div>
 
         <div class="layui-card-body">
-            <table id="LAY-user-back-manage"  lay-filter="LAY-user-back-manage"></table>
+            <table id="LAY-user-back-manage" lay-filter="LAY-user-back-manage"></table>
             <script type="text/html" id="toolbarAdmin">
                 <div class="layui-btn-container">
                     <button class="layui-btn layui-btn-sm" lay-event="add">新增员工</button>
                     <button class="layui-btn layui-btn-sm" lay-event="update">信息修改</button>
                     <button class="layui-btn layui-btn-sm" lay-event="delete">批量删除</button>
-                    <button class="layui-btn layui-btn layui-btn layui-btn-primary layui-btn-sm" id="import">批量导入</button>
-                    <button class="layui-btn layui-btn layui-btn layui-btn-primary layui-btn-sm" id="export">批量导出</button>
+                    <button class="layui-btn layui-btn layui-btn layui-btn-primary layui-btn-sm" id="import">批量导入
+                    </button>
+                    <button class="layui-btn layui-btn layui-btn layui-btn-primary layui-btn-sm" id="export">批量导出
+                    </button>
                 </div>
             </script>
             <script type="text/html" id="checkboxTpl">
@@ -99,9 +101,9 @@
             , accept: 'file' //普通文件
             , done: function (res) {
                 if (res === 0) {
-                    layer.msg(res.msg);
+                    layer.msg(res.msg, {icon: 6, anim: 3});
                 } else {
-                    layer.msg(res.msg);
+                    layer.msg(res.msg, {icon: 5, anim: 3});
                 }
             }
         });
@@ -123,33 +125,19 @@
                 }
             });
         });
-         var btn = document.getElementById("export");
-          btn.addEventListener('click',function () {
-              location.href='/user/exportExcel';
-            // $.ajax({
-            //     url: "/user/exportExcel",
-            //     type: "GET",
-            //     data: '',
-            //     dataType: 'json',
-            //     // contentType : 'application/json;charset=utf-8',
-            //     success: function (res) {
-            //         if (res.code == 0) {
-            //             layer.msg(res.msg);
-            //         } else {
-            //             layer.msg(res.msg);
-            //         }
-            //     }
-            // })
+        var btn = document.getElementById("export");
+        btn.addEventListener('click', function () {
+            location.href = '/user/exportExcel';
         })
         upload.render({
             elem: '#import'
-            ,url: '/user/importExcel' //改成您自己的上传接口
-            ,accept: 'file' //普通文件
-            ,done: function(res){
-                if (res===0){
-                    layer.msg(res.msg);
-                }else{
-                    layer.msg(res.msg);
+            , url: '/user/importExcel' //改成您自己的上传接口
+            , accept: 'file' //普通文件
+            , done: function (res) {
+                if (res === 0) {
+                    layer.msg(res.msg, {icon: 6, anim: 3});
+                } else {
+                    layer.msg(res.msg, {icon: 5, anim: 3});
                 }
             }
         });
@@ -179,75 +167,37 @@
                 , data = checkStatus.data; //获取选中的数据
             switch (obj.event) {
                 case 'add':
-                    layer.open({
-                        type: 2
-                        , title: '添加员工'
-                        , content: '/page/adminform'
-                        , area: ['800px', '500px']
-                        , btn: ['确定', '取消']
-                        , yes: function (index, layero) {
-                            var iframeWindow = window['layui-layer-iframe' + index]
-                                , submitID = 'LAY-user-add-submit'
-                                , submit = layero.find('iframe').contents().find('#' + submitID);
-                            //监听提交
-                            iframeWindow.layui.form.on('submit(' + submitID + ')', function (data) {
-                                var field = data.field; //获取提交的字段
-                                //提交 Ajax 成功后，静态更新表格中的数据
-                                $.ajax({
-                                    url: "/user/addEmployee",
-                                    type: "POST",
-                                    data: field,
-                                    dataType: 'json',
-                                    // contentType : 'application/json;charset=utf-8',
-                                    success: function (res) {
-                                        if (res.code > 0) {
-                                            table.reload('LAY-user-back-manage'); //数据刷新
-                                            layer.close(index); //关闭弹层
-                                            layer.msg(res.msg);
-                                        } else {
-                                            layer.msg(res.msg);
-                                        }
-                                    }
-                                })
-                            });
-                            submit.trigger('click');
-                        }
-                    });
-                    break;
-                case 'update':
-                    if (data.length === 0) {
-                        layer.msg('请选择一行');
-                    } else if (data.length > 1) {
-                        layer.msg('只能同时编辑一个');
-                    } else {
+                    var ii = layer.load();
+                    setTimeout(function () {
+                        layer.close(ii);
                         layer.open({
                             type: 2
-                            , title: '修改员工信息'
-                            , content: "/user/updateEmplform?id=" + data[0].id
+                            , title: '添加员工'
+                            , content: '/page/adminform'
                             , area: ['800px', '500px']
                             , btn: ['确定', '取消']
                             , yes: function (index, layero) {
                                 var iframeWindow = window['layui-layer-iframe' + index]
-                                    , submitID = 'LAY-user-back-submit'
+                                    , submitID = 'LAY-user-add-submit'
                                     , submit = layero.find('iframe').contents().find('#' + submitID);
-
                                 //监听提交
                                 iframeWindow.layui.form.on('submit(' + submitID + ')', function (data) {
                                     var field = data.field; //获取提交的字段
                                     //提交 Ajax 成功后，静态更新表格中的数据
                                     $.ajax({
-                                        url: "/user/updateEmployee",
+                                        url: "/user/addEmployee",
                                         type: "POST",
                                         data: field,
                                         dataType: 'json',
                                         // contentType : 'application/json;charset=utf-8',
                                         success: function (res) {
-                                            if (res.code == 2008) {
+                                            if (res.code > 0) {
                                                 table.reload('LAY-user-back-manage'); //数据刷新
                                                 layer.close(index); //关闭弹层
-                                                layer.msg(res.msg);
+                                                layer.msg(res.msg, {icon: 6, anim: 3});
                                             } else {
-                                                layer.msg(res.msg);
+                                                layer.close(index); //关闭弹层
+                                                layer.msg(res.msg, {icon: 5, anim: 3});
                                             }
                                         }
                                     })
@@ -255,6 +205,53 @@
                                 submit.trigger('click');
                             }
                         });
+                    }, 500);
+                    break;
+                case 'update':
+                    if (data.length === 0) {
+                        layer.msg('请选择一行');
+                    } else if (data.length > 1) {
+                        layer.msg('只能同时编辑一个');
+                    } else {
+                        var ii = layer.load();
+                        setTimeout(function () {
+                            layer.close(ii);
+                            layer.open({
+                                type: 2
+                                , title: '修改员工信息'
+                                , content: "/user/updateEmplform?id=" + data[0].id
+                                , area: ['800px', '500px']
+                                , btn: ['确定', '取消']
+                                , yes: function (index, layero) {
+                                    var iframeWindow = window['layui-layer-iframe' + index]
+                                        , submitID = 'LAY-user-back-submit'
+                                        , submit = layero.find('iframe').contents().find('#' + submitID);
+
+                                    //监听提交
+                                    iframeWindow.layui.form.on('submit(' + submitID + ')', function (data) {
+                                        var field = data.field; //获取提交的字段
+                                        //提交 Ajax 成功后，静态更新表格中的数据
+                                        $.ajax({
+                                            url: "/user/updateEmployee",
+                                            type: "POST",
+                                            data: field,
+                                            dataType: 'json',
+                                            // contentType : 'application/json;charset=utf-8',
+                                            success: function (res) {
+                                                if (res.code == 2008) {
+                                                    table.reload('LAY-user-back-manage'); //数据刷新
+                                                    layer.close(index); //关闭弹层
+                                                    layer.msg(res.msg, {icon: 6, anim: 3});
+                                                } else {
+                                                    layer.msg(res.msg, {icon: 5, anim: 3});
+                                                }
+                                            }
+                                        })
+                                    });
+                                    submit.trigger('click');
+                                }
+                            });
+                        }, 500);
                     }
                     break;
                 case 'delete':
@@ -285,9 +282,9 @@
                                         success: function (res) {
                                             if (res.code == 0) {
                                                 table.reload('LAY-user-back-manage'); //数据刷新
-                                                layer.msg(res.msg);
+                                                layer.msg(res.msg, {icon: 6, anim: 3});
                                             } else {
-                                                layer.msg(res.msg);
+                                                layer.msg(res.msg, {icon: 5, anim: 3});
                                             }
                                         }
                                     });

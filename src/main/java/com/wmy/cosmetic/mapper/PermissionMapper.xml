@@ -44,4 +44,7 @@
     <select id="findRoleByRolna" resultType="com.wmy.cosmetic.entity.Role">
         select * from t_role where rolna=#{rolna}
     </select>
+    <select id="listAlpermission" resultType="com.wmy.cosmetic.entity.Perm">
+        select url,permission from t_perm WHERE url !=''
+    </select>
 </mapper>

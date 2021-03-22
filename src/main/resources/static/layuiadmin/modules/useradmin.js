@@ -2,7 +2,7 @@
 ;layui.define(["table", "form"], function (e) {
     var t = layui.$, i = layui.table;
     var $ = layui.jquery;
-    var form= layui.form;
+    var form = layui.form;
     i.render({
         elem: "#LAY-product-back-manage"
         , toolbar: '#toolbarProduct',
@@ -19,12 +19,12 @@
             }]],
         page: !0,
         limit: 30,
-        height:"full-150",
+        height: "full-150",
         text: "数据为空"
     }), i.on("tool(LAY-product-back-manage)", function (e) {
         var data = e.data;
         if ("del" === e.event)
-            layer.confirm("真的删除此商品？",{title:false,anim: 3}, function (t) {
+            layer.confirm("真的删除此商品？", {title: false, anim: 3}, function (t) {
                 $.ajax({
                     url: "/product/deleteProduct",
                     type: "POST",
@@ -34,15 +34,18 @@
                         if (res.code == 0) {
                             e.del();
                             layer.close(t)
-                            layer.msg(res.msg, {icon: 6,anim: 3});
+                            layer.msg(res.msg, {icon: 6, anim: 3});
                         } else {
-                            layer.msg(res.msg, {icon: 5,anim: 3});
+                            layer.msg(res.msg, {icon: 5, anim: 3});
                         }
                     }
                 });
             })
-         else if ("edit" === e.event) {
+        else if ("edit" === e.event) {
             t(e.tr);
+            var ii = layer.load();
+            setTimeout(function () {
+                layer.close(ii);
             layer.open({
                 type: 2,
                 title: "编辑商品",
@@ -54,7 +57,7 @@
                     var l = window["layui-layer-iframe" + e], r = "LAY-product-update-submit",
                         n = t.find("iframe").contents().find("#" + r);
                     l.layui.form.on("submit(" + r + ")", function (t) {
-                       var data=t.field;
+                        var data = t.field;
                         $.ajax({
                             url: "/product/updateProduct",
                             type: "POST",
@@ -63,23 +66,24 @@
                             success: function (res) {
                                 if (res.code == 0) {
                                     i.reload("LAY-product-back-manage"),
-                                    layer.close(e)
-                                    layer.msg(res.msg, {icon: 6,anim: 3});
+                                        layer.close(e)
+                                    layer.msg(res.msg, {icon: 6, anim: 3});
                                 } else {
-                                    layer.msg(res.msg, {icon: 6,anim: 3});
+                                    layer.msg(res.msg, {icon: 6, anim: 3});
                                 }
                             }
                         });
-                    }),n.trigger("click")
+                    }), n.trigger("click")
                 },
                 success: function (e, t) {
                 }
             })
+            }, 500);
         }
     }), i.render({
         elem: "#LAY-user-back-manage",
         url: "/user/findEmployeeList"
-        ,toolbar: '#toolbarAdmin',
+        , toolbar: '#toolbarAdmin',
         // ,defaultToolbar: ['',{title:'批量导入',layEvent: 'import',icon: 'layui-icon-upload'},
         //     {title:'批量导出',layEvent: 'export',icon: 'layui-icon-export'}], //这里在右边显示
         cols: [[{type: "checkbox", fixed: "left"}
@@ -91,7 +95,7 @@
             {field: "name", title: "姓名"},
             {field: "sex", title: "性别", width: 70},
             {field: "position", title: "职位"},
-            {field: "status",width: 120,title: "状态" ,templet: '#checkboxTpl'},
+            {field: "status", width: 120, title: "状态", templet: '#checkboxTpl'},
             {field: "salary", title: "工资"},
             {
                 field: "entrytime",
@@ -110,13 +114,12 @@
             {title: "操作", width: 160, align: "center", fixed: "right", toolbar: "#table-useradmin-admin"}]],
         page: !0,
         limit: 30,
-        height:"full-150",
+        height: "full-150",
         text: "数据为空"
-
     }), i.on("tool(LAY-user-back-manage)", function (e) {
         var data = e.data;
         if ("del" === e.event)
-            layer.confirm("确定删除此员工？",{title:false,anim: 3}, function (t) {
+            layer.confirm("确定删除此员工？", {title: false, anim: 3}, function (t) {
                 $.ajax({
                     url: "/user/deleteEmployee",
                     type: "POST",
@@ -126,14 +129,17 @@
                         if (res.code == 2009) {
                             e.del();
                             layer.close(t)
-                            layer.msg(res.msg, {icon: 6,anim: 3});
+                            layer.msg(res.msg, {icon: 6, anim: 3});
                         } else {
-                            layer.msg(res.msg, {icon: 5,anim: 3});
+                            layer.msg(res.msg, {icon: 5, anim: 3});
                         }
                     }
                 });
-        }); else if ("edit" === e.event) {
+            }); else if ("edit" === e.event) {
             t(e.tr);
+            var ii = layer.load();
+            setTimeout(function () {
+                layer.close(ii);
             layer.open({
                 type: 2,
                 title: "修改员工信息",
@@ -154,9 +160,9 @@
                                 if (res.code == 2008) {
                                     i.reload("LAY-user-back-manage"),
                                         layer.close(e)
-                                    layer.msg(res.msg, {icon: 6,anim: 3});
+                                    layer.msg(res.msg, {icon: 6, anim: 3});
                                 } else {
-                                    layer.msg(res.msg, {icon: 6,anim: 3});
+                                    layer.msg(res.msg, {icon: 6, anim: 3});
                                 }
                             }
                         });
@@ -166,6 +172,7 @@
 
                 }
             })
+            }, 500);
         }
     }), i.render({
         elem: "#LAY-order-manage",
@@ -173,7 +180,7 @@
         cols: [[
             {field: "orderid", width: 300, title: "订单编号"},
             {field: "payment", title: "支付金额",},
-            {field: "status", title: "支付状态",templet: '#paystatus'},
+            {field: "status", title: "支付状态", templet: '#paystatus'},
             {
                 field: "createdt",
                 title: "开启时间",
@@ -191,32 +198,32 @@
             {title: "操作", width: 160, align: "center", fixed: "right", toolbar: "#table-order"}]],
         page: !0,
         limit: 30,
-        height:"full-150",
+        height: "full-150",
         text: "数据为空"
     }), i.on("tool(LAY-order-manage)", function (e) {
         var data = e.data;
         if ("del" === e.event)
-                layer.confirm("确定删除此订单？",{title:false,anim: 3}, function (t) {
-                    $.ajax({
-                        url: "/order/deleteOrderForm",
-                        type: "POST",
-                        data: {orderid: data.orderid},
-                        dataType: 'json',
-                        success: function (res) {
-                            if (res.code == 0) {
-                                e.del();
-                                layer.close(t)
-                                layer.msg(res.msg, {icon: 6,anim: 3});
-                            } else {
-                                layer.msg(res.msg, {icon: 5,anim: 3});
-                            }
+            layer.confirm("确定删除此订单？", {title: false, anim: 3}, function (t) {
+                $.ajax({
+                    url: "/order/deleteOrderForm",
+                    type: "POST",
+                    data: {orderid: data.orderid},
+                    dataType: 'json',
+                    success: function (res) {
+                        if (res.code == 0) {
+                            e.del();
+                            layer.close(t)
+                            layer.msg(res.msg, {icon: 6, anim: 3});
+                        } else {
+                            layer.msg(res.msg, {icon: 5, anim: 3});
                         }
-                    });
-                })
-         else if ("edit" === e.event) {
+                    }
+                });
+            })
+        else if ("edit" === e.event) {
             t(e.tr);
-            var ii=layer.load();
-            setTimeout(function(){
+            var ii = layer.load();
+            setTimeout(function () {
                 layer.close(ii);
                 layer.open({
                     type: 2,
@@ -238,9 +245,9 @@
                                     if (res.code == 0) {
                                         i.reload("LAY-user-back-manage"),
                                             layer.close(e)
-                                        layer.msg(res.msg, {icon: 6,anim: 3});
+                                        layer.msg(res.msg, {icon: 6, anim: 3});
                                     } else {
-                                        layer.msg(res.msg, {icon: 6,anim: 3});
+                                        layer.msg(res.msg, {icon: 6, anim: 3});
                                     }
                                 }
                             });
@@ -250,7 +257,7 @@
 
                     }
                 })
-            },500)
+            }, 500)
         }
     }), i.render({
         elem: "#LAY-user-back-role",
@@ -270,26 +277,26 @@
     }), i.on("tool(LAY-user-back-role)", function (e) {
         var data = e.data;
         if ("del" === e.event)
-                layer.confirm("确定删除此角色？",{title:false,anim: 3}, function (t) {
-                    $.ajax({
-                        url: "/permission/deleteRole?rolid=" + data.rolid,
-                        type: "POST",
-                        data: {orderid: data.orderid},
-                        dataType: 'json',
-                        success: function (res) {
-                            if (res.code == 0) {
-                                e.del();
-                                layer.close(t)
-                                layer.msg(res.msg, {icon: 6,anim: 3});
-                            } else {
-                                layer.msg(res.msg, {icon: 5,anim: 3});
-                            }
+            layer.confirm("确定删除此角色？", {title: false, anim: 3}, function (t) {
+                $.ajax({
+                    url: "/permission/deleteRole?rolid=" + data.rolid,
+                    type: "POST",
+                    data: {orderid: data.orderid},
+                    dataType: 'json',
+                    success: function (res) {
+                        if (res.code == 0) {
+                            e.del();
+                            layer.close(t)
+                            layer.msg(res.msg, {icon: 6, anim: 3});
+                        } else {
+                            layer.msg(res.msg, {icon: 5, anim: 3});
                         }
-                    });
-        }); else if ("edit" === e.event) {
+                    }
+                });
+            }); else if ("edit" === e.event) {
             t(e.tr);
-            var ii=layer.load();
-            setTimeout(function(){
+            var ii = layer.load();
+            setTimeout(function () {
                 layer.close(ii);
                 layer.open({
                     type: 2,
@@ -310,9 +317,9 @@
                                     if (res.code == 0) {
                                         i.reload("LAY-user-back-manage"),
                                             layer.close(e)
-                                        layer.msg(res.msg, {icon: 6,anim: 3});
+                                        layer.msg(res.msg, {icon: 6, anim: 3});
                                     } else {
-                                        layer.msg(res.msg, {icon: 6,anim: 3});
+                                        layer.msg(res.msg, {icon: 6, anim: 3});
                                     }
                                 }
                             });
