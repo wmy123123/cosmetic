@@ -32,13 +32,15 @@
         <div class="layui-form-item">
             <label class="layui-form-label">角色名称</label>
             <div class="layui-input-inline">
-                <input type="text" name="rolna" placeholder="角色名称" lay-verType="tips" lay-verify="required"  autocomplete="off"  class="layui-input">
+                <input type="text" name="rolna" placeholder="角色名称" lay-verType="tips" lay-verify="required"
+                       autocomplete="off" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">角色描述</label>
             <div class="layui-input-block">
-                <textarea style="height: 250px" name="description" lay-verType="tips" lay-verify="required"  placeholder="角色描述"
+                <textarea style="height: 250px" name="description" lay-verType="tips" lay-verify="required"
+                          placeholder="角色描述"
                           class="layui-textarea"></textarea>
             </div>
         </div>
@@ -78,9 +80,9 @@
         }
 
         $.fn.zTree.init($("#treeDemo"), getSettting(), getMenuTree());
-        var permissionIds = getCheckedMenuIds();
         form.on('submit(LAY-user-add-submit)', function (data) {
             var field = data.field; //获取提交的字段;
+            var permissionIds = getCheckedMenuIds();
             field.permids = permissionIds;
             console.log("发起请求");
             a.ajax({
@@ -92,9 +94,9 @@
                 success: function (res) {
                     if (res.code == 0) {
                         colseFrame();
-                        layer.msg(res.msg, {icon: 6,anim: 3});
+                        layer.msg(res.msg, {icon: 6, anim: 3});
                     } else {
-                        layer.msg(res.msg, {icon: 5,anim: 3});
+                        layer.msg(res.msg, {icon: 5, anim: 3});
                     }
                 }
             });

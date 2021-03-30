@@ -2,10 +2,7 @@ package com.wmy.cosmetic.web;
 
 import com.github.pagehelper.PageInfo;
 import com.wmy.cosmetic.Exception.ServiceException;
-import com.wmy.cosmetic.entity.Employee;
-import com.wmy.cosmetic.entity.Product;
-import com.wmy.cosmetic.entity.Result;
-import com.wmy.cosmetic.entity.ResultCode;
+import com.wmy.cosmetic.entity.*;
 import com.wmy.cosmetic.service.OperationFile;
 import com.wmy.cosmetic.service.ProductService;
 import com.wmy.cosmetic.utils.UuidUtils;
@@ -71,6 +68,11 @@ public class ProductController {
         try {
             Employee empl = (Employee) session.getAttribute("user");
             String path = (String) session.getAttribute(empl.getUsername());
+            if (StringUtils.isEmpty(path)){
+                result.setCode(1);
+                result.setMsg("图片不能为空");
+                return result;
+            }
             String filename = path.substring(path.lastIndexOf("/")+1);
             String frompath=productImagepath+"/"+filename;
             String topath=productImagepath2+"/"+filename;
@@ -142,29 +144,39 @@ public class ProductController {
 
     @PostMapping("uploadProductImg")
     @ResponseBody
-    public String uploadHeader(@RequestParam(value = "file") MultipartFile headerImage, HttpSession session) throws IOException {
-        if (headerImage == null) {
-            throw new ServiceException("图片为空");
-        }
-        String filename = headerImage.getOriginalFilename();
-        String suffix = filename.substring(filename.lastIndexOf("."));
-        if (suffix.isEmpty()) {
-            throw new ServiceException("文件格式不正确");
-        }
-        //生成随机文件名
-        filename = UuidUtils.getUUID() + suffix;
-        //确定文件存放路径
-        File dest = new File(productImagepath + "/" + filename);
+    public Result<Object> uploadHeader(@RequestParam(value = "file") MultipartFile headerImage, HttpSession session) throws IOException {
+        Result<Object> result=new Result<>();
+        result.setCode(0);//默认交易成功
+
         try {
-            headerImage.transferTo(dest);
-        } catch (IOException e) {
-            logger.error("上传文件失败" + e.getMessage());
-            throw new RuntimeException("上传文件失败，服务器发生异常" + e);
+            if (headerImage == null) {
+                throw new ServiceException("图片为空");
+            }
+            String filename = headerImage.getOriginalFilename();
+            String suffix = filename.substring(filename.lastIndexOf("."));
+            if (suffix.isEmpty()) {
+                throw new ServiceException("文件格式不正确");
+            }
+            //生成随机文件名
+            filename = UuidUtils.getUUID() + suffix;
+            //确定文件存放路径
+            File dest = new File(productImagepath + "/" + filename);
+            try {
+                headerImage.transferTo(dest);
+            } catch (IOException e) {
+                logger.error("上传文件失败" + e.getMessage());
+                throw new RuntimeException("上传文件失败，服务器发生异常" + e);
+            }
+            String productImgUrl = domain + "/product/getImg/" + filename;
+            Employee empl = (Employee) session.getAttribute("user");
+            session.setAttribute(empl.getUsername(), productImgUrl);
+            result.setMsg("上传成功");
+        } catch (ServiceException e) {
+            result.setCode(1);
+            result.setMsg(e.getMessage());
+            logger.error(e.getMessage(),e);
         }
-        String productImgUrl = domain + "/product/getImg/" + filename;
-        Employee empl = (Employee) session.getAttribute("user");
-        session.setAttribute(empl.getUsername(), productImgUrl);
-        return Result.success();
+        return result;
     }
 
     /**
@@ -221,6 +233,66 @@ public class ProductController {
             logger.error(e.getMessage(), e);
             result.setCode(1);
             result.setMsg(e.getMessage());
+        }
+        return result;
+    }
+    @ResponseBody
+    @RequestMapping(value = "/addProductType")
+    public Result<String> addProductType(ProductType productType) {
+        Result<String> result=new Result<>();
+        result.setCode(0);//默认交易成功
+        try{
+            productService.addProductType(productType);
+            result.setMsg("添加成功");
+        }catch (Exception e){
+            logger.error(e.getMessage(),e);
+            result.setCode(1);
+            result.setMsg("添加失败");
+        }
+        return result;
+    }
+    @ResponseBody
+    @RequestMapping(value = "/updateProductType")
+    public Result<String> updateProductType(ProductType productType) {
+        Result<String> result=new Result<>();
+        result.setCode(0);//默认交易成功
+        try{
+            productService.updateProductType(productType);
+            result.setMsg("修改成功");
+        }catch (Exception e){
+            logger.error(e.getMessage(),e);
+            result.setCode(1);
+            result.setMsg("修改失败");
+        }
+        return result;
+    }
+    @ResponseBody
+    @RequestMapping(value = "/deleteProductType")
+    public Result<String> deleteProductType(Integer id) {
+        Result<String> result=new Result<>();
+        result.setCode(0);//默认交易成功
+        try{
+            productService.deleteProductType(id);
+            result.setMsg("删除成功");
+        }catch (Exception e){
+            logger.error(e.getMessage(),e);
+            result.setCode(1);
+            result.setMsg("删除失败");
+        }
+        return result;
+    }
+    @ResponseBody
+    @RequestMapping(value = "productTypeList")
+    public Result<ProductType> productTypeList(@RequestParam(required = false)Integer id) {
+        Result<ProductType> result=new Result<>();
+        result.setCode(0);//默认交易成功
+        try{
+            result.setData(productService.productTypeList(id));
+            result.setMsg("查询成功");
+        }catch (Exception e){
+            logger.error(e.getMessage(),e);
+            result.setCode(1);
+            result.setMsg("查询失败");
         }
         return result;
     }

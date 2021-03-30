@@ -1,6 +1,7 @@
 package com.wmy.cosmetic.web;
 
 import com.wmy.cosmetic.entity.Employee;
+import com.wmy.cosmetic.entity.OrderForm;
 import com.wmy.cosmetic.entity.Role;
 import com.wmy.cosmetic.service.EmployeeService;
 import com.wmy.cosmetic.service.ProductService;
@@ -33,10 +34,6 @@ public class PageManagement {
             return "redirect:index";
         }
         return "administrators/login";
-    }
-    @GetMapping("/regist")
-    public String regist(){
-        return "administrators/reg";
     }
     @GetMapping("/index")
     public String index(HttpSession session){
@@ -103,14 +100,37 @@ public class PageManagement {
     public String addRole(){
         return "roles/addRole";
     }
-    @GetMapping("unAuthorize")
-    public String unAuthorize(){
-        return "error/unAuthorize";
-    }
     @GetMapping("updateRole")
     public String updateRole(Role role, Model model){
         model.addAttribute("role",role);
         return "roles/updateRole";
     }
-
+    @GetMapping("permsList")
+    public String permsList(){
+        return "perms/list";
+    }
+    @GetMapping("iframeContent")
+    public String iframeContent(){
+        return "perms/iframeContent";
+    }
+    @GetMapping("productType")
+    public String productType(){
+        return "productType/list";
+    }
+    @GetMapping("addProductType")
+    public String addProductType(){
+        return "productType/addProductType";
+    }
+    @GetMapping("updateProductType")
+    public String updateProductType(Integer id,Model model){
+        model.addAttribute("productType",productService.findProductId(id));
+        return "productType/updateProductTypeform";
+    }
+    @GetMapping("result")
+    public String dataset(String total,Model model){
+        OrderForm orderForm=new OrderForm();
+        orderForm.setPayment(Double.parseDouble(total));
+        model.addAttribute("total",orderForm);
+        return "member/result";
+    }
 }

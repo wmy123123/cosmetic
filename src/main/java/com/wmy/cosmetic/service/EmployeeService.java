@@ -14,7 +14,7 @@ import java.util.List;
 public interface EmployeeService {
      Employee login(String username);
      PageInfo<Employee> findEmployeeList(Integer id, String name,String position, int pageNum, int pageSize);
-     int addEmployee(Employee employee);
+     void addEmployee(Employee employee);
      List<Perm> findPermsByEmployeeName(String username);
      Employee findEmployeeById(Integer id);
      int updateEmploy(Employee employee);
@@ -24,7 +24,7 @@ public interface EmployeeService {
      void deleteEmpById(List<String> uuids);
      List<Role> findAllRole();
      void updateAvatarImgPath(String uuid,String imgUrl);
-     PageInfo<Role> roleList(Integer id,Integer pageNumber,Integer limit);
-     void importExcel(MultipartFile file) throws IOException, ParseException;
+     PageInfo<Role> roleList(Integer id,Integer permid,Integer pageNumber,Integer limit);
+     String importExcel(MultipartFile file) throws IOException, ParseException;
      void exportExcel(HttpServletResponse response) throws IOException;
 }

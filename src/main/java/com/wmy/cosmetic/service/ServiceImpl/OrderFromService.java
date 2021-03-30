@@ -41,7 +41,7 @@ public class OrderFromService {
     OrderFromMapper orderFromMapper;
 
     @Transactional
-    public void addOrder(List<OrderItem> orderItems){
+    public Double addOrder(List<OrderItem> orderItems){
         String orderId = UuidUtils.getOrderCode();//订单id
         double totalpric = 0;//订单总钱数
         for (OrderItem od: orderItems) {
@@ -59,6 +59,7 @@ public class OrderFromService {
         orderForm.setEnddt(enddt);
         orderFromMapper.addOrderForm(orderForm);
         orderFromMapper.addOrderItem(orderItems);
+        return totalpric;
     }
 
     public PageInfo<OrderForm> findOrderForm(Date startdt, Date enddt, Integer page, Integer limit){

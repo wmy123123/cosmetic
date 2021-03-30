@@ -19,28 +19,13 @@
         <div class="layui-form layui-card-header layuiadmin-card-header-auto">
             <div class="layui-form-item">
                 <div class="layui-inline">
-                    <label class="layui-form-label">商品ID</label>
+                    <label class="layui-form-label">产品类别ID</label>
                     <div class="layui-input-block">
-                        <input type="text" name="product_id" id="product_id" placeholder="请输入" autocomplete="off" class="layui-input">
+                        <input type="text" name="productType_id" id="productType_id" placeholder="请输入" autocomplete="off" class="layui-input">
                     </div>
                 </div>
                 <div class="layui-inline">
-                    <label class="layui-form-label">商品名称</label>
-                    <div class="layui-input-block">
-                        <input type="text" name="product_name" id="product_name" placeholder="请输入" autocomplete="off" class="layui-input">
-                    </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label">商品种类</label>
-                    <div class="layui-input-block">
-                        <select name="product_type" id="product_type">
-                            <option value="">请选择产品类别</option>
-                            <option  th:each="type:${productType}" th:value="${type.typeid}"  th:text="${type.typename}">香水</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="layui-inline">
-                    <button class="layui-btn layuiadmin-btn-product" lay-submit lay-filter="LAY-product-front-search">
+                    <button class="layui-btn layuiadmin-btn-product" lay-submit lay-filter="LAY-productType-front-search">
                         <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
                     </button>
                 </div>
@@ -48,7 +33,7 @@
         </div>
 
         <div class="layui-card-body">
-            <table id="LAY-product-back-manage" lay-filter="LAY-product-back-manage"></table>
+            <table id="LAY-productType-back-manage" lay-filter="LAY-productType-back-manage"></table>
             <script type="text/html" id="producttype">
                 {{#  if(d.product_type == '1'){ }}
                 <span>香水</span>
@@ -58,13 +43,10 @@
                 <span>口红</span>
                 {{#  } }}
             </script>
-            <script type="text/html" id="toolbarProduct">
+            <script type="text/html" id="toolbarProductType">
                 <div class="layui-btn-container">
-                    <button class="layui-btn layui-btn-sm" lay-event="add">新增产品</button>
+                    <button class="layui-btn layui-btn-sm" lay-event="add">新增分类</button>
                 </div>
-            </script>
-            <script type="text/html" id="imgTpl">
-                <img style="display: inline-block; width: 50%; height: 100%;" src={{ d.avatar }}>
             </script>
             <script type="text/html" id="table-useradmin-webuser">
                 <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>编辑</a>
@@ -86,19 +68,15 @@
             , table = layui.table;
 
         //监听搜索
-        form.on('submit(LAY-product-front-search)', function (data) {
-            var product_id = $('#product_id');
-            var product_name = $('#product_name');
-            var product_type = $('#product_type');
+        form.on('submit(LAY-productType-front-search)', function (data) {
+            var productType_id = $('#productType_id');
             //执行重载
-            table.reload('LAY-product-back-manage', {
+            table.reload('LAY-productType-back-manage', {
                 page: {
                     curr: 1 //重新从第 1 页开始
                 },
                 where: {
-                    product_id: product_id.val(),
-                    product_name: product_name.val(),
-                    product_type: product_type.val(),
+                    id: productType_id.val(),
                 },
                 text: { //自定义文本，此处用法--》当返回数据为空时的异常提示
                     none: '搜索结果为空' //默认：无数据。注：该属性为 layui 2.2.5 开始新增
@@ -106,7 +84,7 @@
             });
         });
         //监听头工具栏事件
-        table.on('toolbar(LAY-product-back-manage)', function (obj) {
+        table.on('toolbar(LAY-productType-back-manage)', function (obj) {
             var checkStatus = table.checkStatus(obj.config.id)
                 , data = checkStatus.data; //获取选中的数据
             switch (obj.event) {
@@ -116,9 +94,9 @@
                         layer.close(ii);
                         layer.open({
                             type: 2
-                            , title: '添加商品'
-                            , content: '/page/addProduct'
-                            , area: ['800px', '500px']
+                            , title: false
+                            , content: '/page/addProductType'
+                            , area: ['350px', '150px']
                             , btn: ['确定', '取消']
                             , yes: function (index, layero) {
                                 var iframeWindow = window['layui-layer-iframe' + index]
@@ -131,14 +109,14 @@
                                     var field = data.field; //获取提交的字段
                                     //提交 Ajax 成功后，静态更新表格中的数据
                                     $.ajax({
-                                        url: "/product/addProduct",
+                                        url: "/product/addProductType",
                                         type: "POST",
                                         data: field,
                                         dataType: 'json',
                                         // contentType : 'application/json;charset=utf-8',
                                         success: function (res) {
                                             if (res.code == 0) {
-                                                table.reload('LAY-product-back-manage'); //数据刷新
+                                                table.reload('LAY-productType-back-manage'); //数据刷新
                                                 layer.close(index); //关闭弹层
                                                 layer.msg(res.msg, {icon: 6, anim: 3});
                                             } else {
@@ -228,9 +206,9 @@
                                     if (res.code > 0) {
                                         table.reload('LAY-user-back-manage'); //数据刷新
                                         layer.close(index); //关闭弹层
-                                        layer.msg('添加成功', {icon: 6, anim: 3});
+                                        layer.msg("添加成功");
                                     } else {
-                                        layer.msg('添加失败', {icon: 6, anim: 3});
+                                        layer.msg("添加失败");
                                     }
                                 }
                             })

@@ -2,6 +2,7 @@ package com.wmy.cosmetic.service.ServiceImpl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.wmy.cosmetic.Exception.ServiceException;
 import com.wmy.cosmetic.entity.Employee;
 import com.wmy.cosmetic.entity.OrderForm;
@@ -33,6 +34,7 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.*;
 
 @Service("employeeService")
 public class EmployeeServiceImpl implements EmployeeService {
@@ -61,23 +63,23 @@ public class EmployeeServiceImpl implements EmployeeService {
         PageInfo<Employee> pageHelper=new PageInfo<>(employees);
         return pageHelper;
     }
-    public int addEmployee(Employee employee) {
+    public void addEmployee(Employee employee) {
         if (ObjectUtils.isEmpty(employee)){
-            return 0;
+            throw new ServiceException("用户不能为空");
         }
         Employee em = employeeMapper.findByUsernameAndPassword(employee.getUsername());
         if (!ObjectUtils.isEmpty(em)){
-            return 0;
+            throw new ServiceException("用户已存在");
         }
         employee.setAvatar(String.format("http://images.nowcoder.com/head/%dt.png",new Random().nextInt(1000)));
         employee.setEntrytime(new Date());
         employee.setUuid(SaltUtils.getEmployeeNumber());
         String salt = SaltUtils.getSalt(8);
         employee.setSalt(salt);
-        employee.setStatus("在职");
+        employee.setStatus("0");
         Md5Hash md5Hash =new Md5Hash(employee.getPassword(),salt,1024);
         employee.setPassword(md5Hash.toHex());
-        return employeeMapper.addEmployee(employee);
+        employeeMapper.addEmployee(employee);
     }
 
     @Override
@@ -146,15 +148,15 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public PageInfo<Role> roleList(Integer id,Integer pageNumber,Integer limit) {
+    public PageInfo<Role> roleList(Integer id,Integer permid,Integer pageNumber,Integer limit) {
         PageHelper.startPage(pageNumber,limit);
-        List<Role> roles = employeeMapper.roleList(id);
+        List<Role> roles = employeeMapper.roleList(id,permid);
         PageInfo<Role> roleList =new PageInfo<>(roles);
         return roleList;
     }
 
     @Override
-    public void importExcel(MultipartFile file) throws IOException, ParseException {
+    public String importExcel(MultipartFile file) throws IOException, ParseException {
         Workbook workbook=null;
         String filename=file.getOriginalFilename();
         if (filename.endsWith(XLS)){
@@ -212,6 +214,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 employeeMapper.addEmployee(employee);
             }
         }
+        return filename;
     }
     public String getCellValue(Cell cell) {
         String value = "";

@@ -116,11 +116,15 @@
                 dataType: 'json',
                 success: function (res) {
                     if (res.code == 0) {
-                        layer.tips('用户已锁定', obj.othis);
+                        if(res.msg==='设置成功'){
+                            layer.tips('用户已锁定', obj.othis);
+                        }else{
+                            layer.msg(res.msg, {icon: 5, anim: 3});
+                        }
                     } else if (res.code == 2) {
                         layer.tips('用户已解锁', obj.othis);
                     } else {
-                        layer.msg(res.msg);
+                        layer.msg(res.msg, {icon: 5, anim: 3});
                     }
                 }
             });
@@ -134,7 +138,7 @@
             , url: '/user/importExcel' //改成您自己的上传接口
             , accept: 'file' //普通文件
             , done: function (res) {
-                if (res === 0) {
+                if (res.code === 0) {
                     layer.msg(res.msg, {icon: 6, anim: 3});
                 } else {
                     layer.msg(res.msg, {icon: 5, anim: 3});
@@ -191,7 +195,7 @@
                                         dataType: 'json',
                                         // contentType : 'application/json;charset=utf-8',
                                         success: function (res) {
-                                            if (res.code > 0) {
+                                            if (res.code === 0) {
                                                 table.reload('LAY-user-back-manage'); //数据刷新
                                                 layer.close(index); //关闭弹层
                                                 layer.msg(res.msg, {icon: 6, anim: 3});
@@ -238,7 +242,7 @@
                                             dataType: 'json',
                                             // contentType : 'application/json;charset=utf-8',
                                             success: function (res) {
-                                                if (res.code == 2008) {
+                                                if (res.code === 0) {
                                                     table.reload('LAY-user-back-manage'); //数据刷新
                                                     layer.close(index); //关闭弹层
                                                     layer.msg(res.msg, {icon: 6, anim: 3});
@@ -280,7 +284,7 @@
                                         dataType: 'json',
                                         // contentType : 'application/json;charset=utf-8',
                                         success: function (res) {
-                                            if (res.code == 0) {
+                                            if (res.code === 0) {
                                                 table.reload('LAY-user-back-manage'); //数据刷新
                                                 layer.msg(res.msg, {icon: 6, anim: 3});
                                             } else {

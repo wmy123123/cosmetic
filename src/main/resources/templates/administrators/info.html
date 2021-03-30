@@ -153,13 +153,13 @@
           });
         }
         , done: function (res) {
-          if (res.code == 1) {
-            Layer.msg(res.msg, {icon: 6});
+          if (res.code === 1) {
+            Layer.msg(res.msg, {icon: 6, anim: 3});
             setTimeout(function () {
               location.reload();
             }, 2000);
           }else{
-            Layer.msg(res.msg, {icon: 5});
+            Layer.msg(res.msg, {icon: 5, anim: 3});
           }
         }
       });
@@ -172,13 +172,13 @@
           type: 'post',
           dataType: 'json',
           success: function (res) {
-            if (res.code == 0) {
-               Layer.msg(res.msg, {icon: 6});
+            if (res.code === 0) {
+              Layer.msg(res.msg, {icon: 6, anim: 3});
               setTimeout(function () {
                 location.reload();
               }, 2000);
             }else {
-               Layer.msg(res.msg, {icon: 5});
+              Layer.msg(res.msg, {icon: 5, anim: 3});
             }
           }
         });

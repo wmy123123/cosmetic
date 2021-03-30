@@ -15,10 +15,10 @@
     <div class="layui-form-item">
         <label class="layui-form-label">商品名称</label>
         <div class="layui-input-inline">
-            <input type="hidden" th:value="${product.product_id}" name="product_id" id="product_id"
+            <input type="hidden" lay-verType="tips" th:value="${product.product_id}" name="product_id" id="product_id"
                    lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
-            <input type="text" th:value="${product.product_name}" name="product_name" id="product_name"
-                   lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
+            <input type="text" lay-verType="tips" lay-verify="required" th:value="${product.product_name}" name="product_name" id="product_name"
+                    placeholder="请输入密码" autocomplete="off" class="layui-input">
         </div>
     </div>
     <div class="layui-form-item">
@@ -37,15 +37,15 @@
     <div class="layui-form-item">
         <label class="layui-form-label">商品数量</label>
         <div class="layui-input-inline">
-            <input type="text" th:value="${product.product_account}" name="product_account" id="product_account"
-                   lay-verify="required" placeholder="请输入手机号码" autocomplete="off" class="layui-input">
+            <input type="text" lay-verType="tips" lay-verify="required" th:value="${product.product_account}" name="product_account" id="product_account"
+                    placeholder="请输入手机号码" autocomplete="off" class="layui-input">
         </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">商品价格</label>
         <div class="layui-input-inline">
-            <input type="text" th:value="${product.product_price}" name="product_price" id="email"
-                   lay-verify="product_price" placeholder="请输入手机号码" autocomplete="off" class="layui-input">
+            <input type="text" lay-verType="tips" lay-verify="required" th:value="${product.product_price}" name="product_price" id="email"
+                   placeholder="请输入手机号码" autocomplete="off" class="layui-input">
         </div>
     </div>
     <div class="layui-form-item">
@@ -60,7 +60,7 @@
     <div class="layui-form-item">
         <label class="layui-form-label">商品信息</label>
         <div class="layui-input-block" style="margin-right: 10px">
-            <textarea th:text="${product.product_message}" name="product_message" id="product_message"
+            <textarea lay-verType="tips" lay-verify="required" th:text="${product.product_message}" name="product_message" id="product_message"
                       placeholder="请输入商品信息" class="layui-textarea"></textarea>
         </div>
     </div>
@@ -92,9 +92,9 @@
             }
             , done: function (res) {
                 if (res.code == 0) {
-                    layer.msg(res.msg);
+                    layer.msg(res.msg(), {icon: 6, anim: 3});
                 } else {
-                    layer.msg(res.msg);
+                    layer.msg(res.msg(), {icon: 5, anim: 3});
                 }
             }
         });

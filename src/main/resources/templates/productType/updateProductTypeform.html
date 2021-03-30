@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <title>layuiAdmin 网站用户 iframe 框</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" th:href="@{/layuiadmin/layui/css/layui.css}" media="all">
+</head>
+<body>
+<div class="layui-form" lay-filter="layuiadmin-form-useradmin" id="layuiadmin-form-useradmin"
+     style="padding: 20px 0 0 0;">
+    <div class="layui-form-item">
+        <label class="layui-form-label">分类名</label>
+        <div class="layui-input-inline">
+            <input type="hidden" lay-verType="tips" th:value="${productType.typeid}" name="typeid" lay-verify="required" autocomplete="off"
+                   class="layui-input">
+            <input type="text" lay-verType="tips" name="typename" th:value="${productType.typename}" lay-verify="required"
+                   autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item layui-hide">
+        <input type="button" lay-submit lay-filter="LAY-productType-update-submit" id="LAY-productType-update-submit"
+               value="确认">
+    </div>
+</div>
+
+<script th:src="@{/layuiadmin/layui/layui.js}"></script>
+<script>
+    layui.config({
+        base: '../layuiadmin/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index' //主入口模块
+    }).use(['index', 'form', 'upload'], function () {
+        var $ = layui.$
+            , form = layui.form
+            , upload = layui.upload;
+        var product_id = document.getElementById("product_id").value;
+        upload.render({
+            elem: '#updateProductImg'
+            , url: '/product/updateProductImg?product_id=' + product_id
+            , before: function (obj) {
+                //预读本地文件示例，不支持ie8
+                obj.preview(function (index, file, result) {
+                    $('#demo1').attr('src', result); //图片链接（base64）
+                });
+            }
+            , done: function (res) {
+                if (res.code == 0) {
+                    layer.msg(res.msg(), {icon: 6, anim: 3});
+                } else {
+                    layer.msg(res.msg(), {icon: 5, anim: 3});
+                }
+            }
+        });
+    })
+</script>
+</body>
+</html>

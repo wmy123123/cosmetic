@@ -15,7 +15,7 @@
 <body>
 
 <div class="layui-fluid">
-    <div class="layui-card layui-col-sm6" style="height: 620px">
+    <div class="layui-card layui-col-sm7" style="height: 620px">
         <div class="layui-form layui-card-header layuiadmin-card-header-auto">
             <div class="layui-form-item">
                 <div class="layui-inline">
@@ -45,29 +45,34 @@
         </div>
     </div>
     <div class="layui-col-sm4">
-    <div class="layui-card" style="margin-left: 20px;height: 620px;float: left">
-        <div class="layui-card-body">
-            <div class="layui-inline">
-                <label class="layui-form-label">选中的商品</label>
-            </div>
-            <table class="layui-hide" id="test" lay-filter="test"></table>
-            <script type="text/html" id="barDemo">
-                <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">移除</a>
+        <div class="layui-card" style="margin-left: 20px;height: 620px;float: left">
+            <div class="layui-card-body">
+                <div class="layui-inline">
+                    <label class="layui-form-label">选中的商品</label>
+                </div>
+                <table class="layui-hide" id="test" lay-filter="test"></table>
+                <script type="text/html" id="barDemo">
+                    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i
+                            class="bi bi-pencil-square"></i>移除</a>
 
-            </script>
-            <div class="layui-inline">
-                <button type="button" id="order" style="margin-left: 350px;margin-top: 10px" class="layui-btn">提交订单
-                </button>
+                </script>
+                <div class="layui-inline" style="margin-top: 10px">
+                    <div style="float: left;width: 200px">合计：<span id="total"
+                                                                   style="font-size: 30px;color: red">00.00</span>元
+                    </div>
+                    <div style="float: left">
+                        <button type="button" id="order" style="margin-left: 122px;" class="layui-btn">提交订单</button>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
     </div>
 </div>
 
 <script th:src="@{/layuiadmin/layui/layui.js}" src="../../../layuiadmin/layui/layui.js"></script>
 <script>
     layui.config({
-        base: '../../../layuiadmin/' //静态资源所在路径
+        base: '../layuiadmin/' //静态资源所在路径
     }).extend({
         index: 'lib/index' //主入口模块
     }).use(['index', 'useradmin', 'table'], function () {
@@ -78,10 +83,10 @@
             elem: '#test',
             cols: [
                 [
-                    {field: "product_id",  title: "商品编号", sort: !0},
-                    {field: "product_name",  title: "商品名称"},
-                    {field: "num", title: "商品数量",  edit: 'text'},
-                    {title: "操作",  align: "center", toolbar: "#barDemo"}
+                    {field: "product_id",width: 100, title: "商品编号"},
+                    {field: "product_name", width: 150, title: "商品名称"},
+                    {field: "num", title: "商品数量", width: 100, edit: 'text'},
+                    {title: "操作", align: "center", toolbar: "#barDemo"}
                 ]
             ],
             data: [],
@@ -94,13 +99,19 @@
                 tables.reload({
                     data: Data
                 });
-
+                var total = 0;
+                for (var t = 0; t < Data.length; t++) {
+                    var num = Data[t].num
+                    var price = Data[t].product_price
+                    var sum = num * price
+                    total += sum
+                }
+                $("#total").text(total.toFixed(2))
             }
 
         })
         //监听头工具栏事件
         table.on('edit(test)', function (obj) {
-            debugger
             var data = obj.data;
             var selector = obj.tr.find('[data-field=' + obj.field + ']');
             var oldtext = $(selector).text();
@@ -117,6 +128,15 @@
                         obj.update({num: oldtext});
                     }
                 }
+                var Data = table.cache["test"];
+                var total = 0;
+                for (var t = 0; t < Data.length; t++) {
+                    var num = Data[t].num
+                    var price = Data[t].product_price
+                    var sum = num * price
+                    total += sum
+                }
+                $("#total").text(total.toFixed(2))
             }
         });
         table.render({
@@ -125,7 +145,7 @@
             cols: [
                 [
                     {field: "product_id", title: "商品编号", sort: !0},
-                    {field: "product_name", title: "商品名称"},
+                    {field: "product_name", width: 200, title: "商品名称"},
                     {field: "product_price", title: "商品价格"},
                     {field: "product_account", title: "库存数量"},
                     {
@@ -133,9 +153,7 @@
                     }]
             ],
             page: !0,
-            limit: 30,
-            height:"full-150",
-            text: "对不起，加载出现异常！"
+            limit: 11,
         }), table.on("tool(test2)", function (e) {
             var datas = e.data;
             if ("edit" === e.event) {
@@ -158,6 +176,10 @@
                             flag = false;
                             let number = parseInt(product.num);
                             product.num = number + 1
+                            if (product.num > product.product_account) {
+                                product.num -= 1
+                                layer.msg("库存数量不足", {icon: 5, anim: 6});
+                            }
                             break;
                         }
                     }
@@ -166,6 +188,14 @@
                         r.push(temp);
                     }
                 }
+                var total = 0;
+                for (var t = 0; t < r.length; t++) {
+                    var num = r[t].num
+                    var price = r[t].product_price
+                    var sum = num * price
+                    total += sum
+                }
+                $("#total").text(total.toFixed(2))
                 tables.reload({
                     data: r
                 });
@@ -180,7 +210,7 @@
                     curr: 1 //重新从第 1 页开始
                 },
                 where: {
-                    productId: product_id.val(),
+                    product_id: product_id.val(),
                 },
                 text: { //自定义文本，此处用法--》当返回数据为空时的异常提示
                     none: '搜索结果为空' //默认：无数据。注：该属性为 layui 2.2.5 开始新增
@@ -193,7 +223,7 @@
                     curr: 1 //重新从第 1 页开始
                 },
                 where: {
-                    productId: null,
+                    product_id: null,
                 },
                 text: { //自定义文本，此处用法--》当返回数据为空时的异常提示
                     none: '搜索结果为空' //默认：无数据。注：该属性为 layui 2.2.5 开始新增
@@ -210,10 +240,28 @@
                 dataType: 'json',
                 success: function (res) {
                     if (res.code == 0) {
-                        layer.msg(res.msg);
+                        // layer.msg(res.msg);
+                        // setTimeout(function () {
+                        //     location.reload();
+                        // }, 1500);
+                        var total=res.datas.toFixed(2)
+                        var ii = layer.load();
                         setTimeout(function () {
-                            location.reload();
-                        }, 1500);
+                            layer.close(ii);
+                            layer.open({
+                                type: 2,
+                                content: "/page/result?total="+total,
+                                title:'交易结果',
+                                area: ["100%", "100%"],
+                                yes: function (e, t) {
+                                    var l = window["layui-layer-iframe" + e], r = "LAY-user-back-submit",
+                                        n = t.find("iframe").contents().find("#" + r);
+                                    l.layui.form.on("submit(" + r + ")", function (t) {
+                                        layer.close(e)
+                                    }), n.trigger("click")
+                                },
+                            })
+                        }, 500);
                     } else {
                         layer.msg(res.msg);
                     }

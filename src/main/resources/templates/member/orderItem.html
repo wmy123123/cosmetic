@@ -1,81 +1,100 @@
-
-
 <!DOCTYPE html>
 <html xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
-  <meta charset="utf-8">
-  <title>layuiAdmin 网站用户</title>
-  <meta name="renderer" content="webkit">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
-  <link rel="stylesheet" th:href="@{/layuiadmin/layui/css/layui.css}"  href="../../../layuiadmin/layui/css/layui.css" media="all">
-  <link rel="stylesheet" th:href="@{/layuiadmin/style/admin.css}"   href="../../../layuiadmin/style/admin.css" media="all">
+    <meta charset="utf-8">
+    <title>layuiAdmin 网站用户</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" th:href="@{/layuiadmin/layui/css/layui.css}" href="../../../layuiadmin/layui/css/layui.css"
+          media="all">
+    <link rel="stylesheet" th:href="@{/layuiadmin/style/admin.css}" href="../../../layuiadmin/style/admin.css"
+          media="all">
 </head>
-<body>
-<div class="layui-form" style="margin: 20px">
-  <table class="layui-table" th:each="item,itemStat:${orderForm}">
-    <colgroup>
-      <col width="90">
-      <col width="90">
-      <col width="90">
-      <col width="92">
-      <col width="90">
-      <col width="90">
-      <col>
-    </colgroup>
-    <thead>
-    <tr>
-      <td>订单号</td>
-      <td th:text="${item.orderid}"></td>
-      <td>交易时间</td>
-      <td th:text="${#dates.format(item.enddt, 'yyyy-MM-dd HH:mm:ss')}"></td>
-      <td>支付金额</td>
-      <td th:text="${item.payment}"></td>
-    </tr>
-    <tr>
-      <td>支付状态</td>
-      <td th:text="${item.status}"></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>商品编号</th>
-      <th>商品名称</th>
-      <th>商品图片</th>
-      <th>商品单价</th>
-      <th>商品描述</th>
-      <th>交易数量</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="items,itemsStat:${item.orderItem}">
-      <td th:text="${items.product.product_id}"></td>
-      <td th:text="${items.product.product_name}"></td>
-      <td><img th:src="${items.product.product_img}"></td>
-      <td th:text="${items.product.product_price}"></td>
-      <td th:text="${items.product.product_message}"></td>
-      <td th:text="${items.num}"></td>
-    </tr>
-    </tbody>
-  </table>
+<style>
+    body {
+        background-color: white;
+    }
+
+    span {
+        color: black;
+    }
+</style>
+<body style="height: 100%">
+<div class="layui-form" style="padding: 10px">
+    <div th:each="item,itemStat:${orderForm}">
+        <fieldset class="layui-elem-field site-demo-button" style="margin-top: 20px;">
+            <legend>订单详情</legend>
+            <div>
+                <div class="layui-form-item" style="margin-top: 20px;margin-left: 20px">
+                    <div class="layui-inline">
+                        <div style="float: left">订单号：<span th:text="${item.orderid}"></span></div>
+                        <div style="float: left;margin-left: 50px">交易时间：
+                            <sapn style="color: black"
+                                  th:text="${#dates.format(item.enddt, 'yyyy-MM-dd HH:mm:ss')}"></sapn>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item" style="margin-left: 20px">
+                    <div class="layui-inline">
+                        <div style="float: left">支付金额：<span th:text="${item.payment}"></span></div>
+                        <div style="float: left;margin-left: 50px">支付状态：
+                            <span th:if="${item.status}==1">已支付</span>
+                            <span th:if="${item.status}==0">未支付</span>
+                        </div>
+                        <div style="float: left;margin-left: 50px">收银员：
+                            <span>Lisa</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        <table class="layui-table" lay-skin="line">
+            <colgroup>
+                <col width="90">
+                <col width="90">
+                <col width="90">
+                <col width="92">
+                <col width="90">
+                <col>
+            </colgroup>
+            <thead>
+            <tr>
+                <th>商品编号</th>
+                <th>商品名称</th>
+                <th>商品图片</th>
+                <th>商品单价</th>
+                <th>交易数量</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="items,itemsStat:${item.orderItem}">
+                <td th:text="${items.product.product_id}"></td>
+                <td th:text="${items.product.product_name}"></td>
+                <td><img style="width: 50px;height: 50px" th:src="${items.product.product_img}"></td>
+                <td th:text="${items.product.product_price}"></td>
+                <td th:text="${items.num}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
-  <script  th:src="@{/layuiadmin/layui/layui.js}" src="../../../layuiadmin/layui/layui.js"></script>
-  <script>
-  layui.config({
-    base: '../../../layuiadmin/' //静态资源所在路径
-  }).extend({
-    index: 'lib/index' //主入口模块
-  }).use(['index', 'useradmin', 'table'], function(){
-    var $ = layui.$
-    ,form = layui.form
-    ,table = layui.table;
-    $('.layui-btn.layuiadmin-btn-useradmin').on('click', function(){
-      var type = $(this).data('type');
-      active[type] ? active[type].call(this) : '';
+<script th:src="@{/layuiadmin/layui/layui.js}" src="../../../layuiadmin/layui/layui.js"></script>
+<script>
+    layui.config({
+        base: '../../../layuiadmin/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index' //主入口模块
+    }).use(['index', 'useradmin', 'table'], function () {
+        var $ = layui.$
+            , form = layui.form
+            , table = layui.table;
+        $('.layui-btn.layuiadmin-btn-useradmin').on('click', function () {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
     });
-  });
-  </script>
+</script>
 </body>
 </html>

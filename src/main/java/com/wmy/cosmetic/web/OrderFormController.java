@@ -30,16 +30,17 @@ public class OrderFormController {
     OrderFromService orderFromService;
     @RequestMapping("addOrder")
     @ResponseBody
-    public Result<String> addOrder(@RequestBody List<OrderItem> orderItems){
-        Result<String> result=new Result<>();
+    public Result<Double> addOrder(@RequestBody List<OrderItem> orderItems){
+        Result<Double> result=new Result<>();
         result.setCode(0);//默认交易成功
         try {
-            orderFromService.addOrder(orderItems);
-            result.setMsg("下单成功");
+            Double total = orderFromService.addOrder(orderItems);
+            result.setDatas(total);
+            result.setMsg("交易成功");
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
             result.setCode(1);
-            result.setMsg("下单失败");
+            result.setMsg("交易失败");
         }
         return result;
     }

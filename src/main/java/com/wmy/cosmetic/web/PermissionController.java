@@ -2,6 +2,8 @@ package com.wmy.cosmetic.web;
 
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.wmy.cosmetic.entity.DtreeResult;
 import com.wmy.cosmetic.entity.Perm;
 import com.wmy.cosmetic.entity.Result;
 import com.wmy.cosmetic.entity.Role;
@@ -14,7 +16,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import java.util.List;
 
 @Controller
@@ -99,4 +100,83 @@ public class PermissionController {
         }
         return result;
     }
+    @RequestMapping("listAlPermission")
+    @ResponseBody
+    public DtreeResult<JSONArray> listAlPermission(){
+        DtreeResult<JSONArray> result=new DtreeResult<>();
+        try{
+            Result<JSONArray> result1 = permissionService.listAlPermission();
+            DtreeResult.Status status=new DtreeResult.Status();
+            status.setCode(200);
+            status.setMessage("数据请求成功");
+            result.setStatus(status);
+            System.out.println(result1.getDatas());
+            result.setData(result1.getDatas());
+        }catch (Exception e){
+            logger.error(e.getMessage(),e);
+        }
+        return result;
+    }
+    @RequestMapping("permissionItem")
+    @ResponseBody
+    public Result<JSONObject> permissionItem(Integer id){
+        Result<JSONObject>result=new Result<>();
+        result.setCode(0);
+        try {
+           String st= JSONObject.toJSONString(permissionService.permissionItem(id));
+            JSONObject parent = (JSONObject) JSONObject.parse(st);
+           result.setDatas(parent);
+        } catch (Exception e){
+            logger.error(e.getMessage(),e);
+            result.setCode(1);
+            result.setMsg("查询失败");
+        }
+        return result;
+    }
+    @RequestMapping("addperm")
+    @ResponseBody
+    public Result<String> addperm(Perm perm){
+        Result<String>result=new Result<>();
+        result.setCode(0);
+        try {
+            permissionService.addPerm(perm);
+            result.setMsg("添加成功");
+        } catch (Exception e){
+            logger.error(e.getMessage(),e);
+            result.setCode(1);
+            result.setMsg("添加失败");
+        }
+        return result;
+    }
+    @RequestMapping("updatePerm")
+    @ResponseBody
+    public Result<String> updatePerm(Perm p){
+        Result<String>result=new Result<>();
+        result.setCode(0);
+        try {
+            permissionService.updatePerm(p);
+            result.setMsg("修改成功");
+        } catch (Exception e){
+            logger.error(e.getMessage(),e);
+            result.setCode(1);
+            result.setMsg("修改失败");
+        }
+        return result;
+    }
+    @RequestMapping("deletePerm")
+    @ResponseBody
+    public Result<String> deletePerm(Integer id){
+        Result<String>result=new Result<>();
+        result.setCode(0);
+        try {
+          permissionService.deletePerm(id);
+          result.setMsg("删除成功");
+        } catch (Exception e){
+            logger.error(e.getMessage(),e);
+            result.setCode(1);
+            result.setMsg("删除失败");
+        }
+        return result;
+    }
+
 }

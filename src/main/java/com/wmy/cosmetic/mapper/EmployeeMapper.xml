@@ -90,10 +90,13 @@
         select * from t_employee where uuid=#{uuid}
     </select>
     <select id="roleList" resultType="com.wmy.cosmetic.entity.Role">
-        select * from t_role
+        select DISTINCT a.* from t_role a left join t_role_perm b on a.rolid=b.roleid
         <where>
             <if test="id != null">
                 rolid=#{id}
+            </if>
+            <if test="permid !=null">
+                permid=#{permid}
             </if>
         </where>
     </select>

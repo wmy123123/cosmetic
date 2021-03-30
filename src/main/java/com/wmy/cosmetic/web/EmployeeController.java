@@ -7,6 +7,7 @@ import com.wmy.cosmetic.Exception.ServiceException;
 import com.wmy.cosmetic.entity.*;
 import com.wmy.cosmetic.mapper.EmployeeMapper;
 import com.wmy.cosmetic.service.EmployeeService;
+import com.wmy.cosmetic.service.ServiceImpl.EmployeeMessage;
 import com.wmy.cosmetic.utils.UuidUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;
@@ -26,9 +27,7 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.imageio.ImageIO;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -48,6 +47,9 @@ public class EmployeeController {
     private String domain;
     @Autowired
     private EmployeeService employeeService;
+    @Autowired
+    private EmployeeMessage employeeMessage;
+
     @Autowired(required = false)
     private EmployeeMapper employeeMapper;
     @Autowired
@@ -57,13 +59,18 @@ public class EmployeeController {
     @ResponseBody
     @RequiresPermissions(value={"empl:add"}, logical= Logical.OR)
     @PostMapping("/addEmployee")
-    public String addEmployee(Employee employee) {
-        int result = employeeService.addEmployee(employee);
-        if (result != 1) {
-            return Result.failure(ResultCode.ERR_ADD_EMPLOYEE);
-        } else {
-            return Result.success(ResultCode.SUCCESS_ADD_EMPLOYEE, null);
+    public Result<Object> addEmployee(Employee employee) {
+        Result<Object> result=new Result<>();
+        result.setCode(0);//默认交易成功
+        try {
+            employeeService.addEmployee(employee);
+            result.setMsg("添加成功");
+        } catch (Exception e) {
+            result.setCode(1);
+            result.setMsg(e.getMessage());
+            logger.error(e.getMessage(),e);
         }
+        return result;
     }
 
     @PostMapping("/login")
@@ -74,12 +81,12 @@ public class EmployeeController {
         Subject subject = null;
         UsernamePasswordToken token = null;
         try {
-//            String kaptcha = (String) session.getAttribute("kaptcha");
-//            if (kaptcha.isEmpty() || !kaptcha.equalsIgnoreCase(vercode)) {
-//                result.setCode(1);
-//                result.setMsg("验证码错误");
-//                return result;
-//            }
+            String kaptcha = (String) session.getAttribute("kaptcha");
+            if (kaptcha.isEmpty() || !kaptcha.equalsIgnoreCase(vercode)) {
+                result.setCode(1);
+                result.setMsg("验证码错误");
+                return result;
+            }
             //获取当前的用户
             subject = SecurityUtils.getSubject();
             token = new UsernamePasswordToken(username, password);
@@ -138,17 +145,24 @@ public class EmployeeController {
 
     @ResponseBody
     @RequestMapping("/findEmployeeList")
-    public String findEmployeeList(@RequestParam(value = "uuid", required = false) Integer uuid,
+    public Result<Employee> findEmployeeList(@RequestParam(value = "uuid", required = false) Integer uuid,
                                    @RequestParam(value = "position", required = false) String position,
                                    @RequestParam(value = "name", required = false) String name,
                                    @RequestParam(value = "page", required = false) Integer page,
                                    @RequestParam(value = "limit", required = false) Integer limit) {
-        PageInfo<Employee> employees = employeeService.findEmployeeList(uuid, name, position, page, limit);
-        if (employees != null) {
-            return Result.success(ResultCode.SUCCESS_FIND_EMPLOYEE_lIST, employees.getTotal(), employees.getList());
-        } else {
-            return Result.failure(ResultCode.ERR_FIND_EMPLOYEE_LIST);
+        Result<Employee> result=new Result<>();
+        result.setCode(0);//默认交易成功
+        try {
+            PageInfo<Employee> employees = employeeService.findEmployeeList(uuid, name, position, page, limit);
+            result.setMsg("添加成功");
+            result.setData(employees.getList());
+            result.setCount(employees.getTotal());
+        } catch (Exception e) {
+            result.setCode(1);
+            result.setMsg(e.getMessage());
+            logger.error(e.getMessage(),e);
         }
+        return result;
     }
 
     @GetMapping("/getImage/{filename}")
@@ -190,28 +204,34 @@ public class EmployeeController {
 //        request.getSession().invalidate();
         //       Employee employee = (Employee) request.getSession().getAttribute("user");
         Employee empl = (Employee) session.getAttribute("user");
-        model.addAttribute("empl", empl);
+        Employee employee = employeeService.findEmployeeById(empl.getId());
+        model.addAttribute("empl", employee);
         return "administrators/info";
     }
 
     @RequestMapping("/updateEmployee")
     @ResponseBody
-    public String updateEmployee(Employee employee) {
-        if (ObjectUtils.isEmpty(employee)) {
-            return null;
+    public Result<Object> updateEmployee(Employee employee) {
+        Result<Object> result=new Result<>();
+        result.setCode(0);//默认交易成功
+        try {
+            if (ObjectUtils.isEmpty(employee)) {
+                return null;
+            }
+            employeeService.updateEmploy(employee);
+            result.setMsg("修改成功");
+        } catch (Exception e) {
+            result.setCode(1);
+            result.setMsg(e.getMessage());
+            logger.error(e.getMessage(),e);
         }
-        int i = employeeService.updateEmploy(employee);
-        if (i > 0) {
-            return Result.success(ResultCode.SUCCESS_UPDATE_EMPLOYEE, null);
-        } else {
-            return Result.failure(ResultCode.ERR_UPDATE_EMPLOYEE, null);
-        }
+        return result;
     }
 
     @RequestMapping("/updateEmployee1")
     @ResponseBody
-    public Result<String> updateEmployee1(Employee employee, HttpSession session) {
-        Result<String> result = new Result<>();
+    public Result<Object> updateEmployee1(Employee employee, HttpSession session) {
+        Result<Object> result = new Result<>();
         result.setCode(0);//默认交易成功
         try {
             employeeService.updateEmploy1(employee);
@@ -227,36 +247,45 @@ public class EmployeeController {
 
     @ResponseBody
     @RequestMapping("/deleteEmployee")
-    public String deleteEmployee(Integer id) {
-        if (ObjectUtils.isEmpty(id)) {
-            return null;
+    public Result<Object> deleteEmployee(Integer id) {
+        Result<Object> result = new Result<>();
+        result.setCode(0);//默认交易成功
+        try {
+            employeeService.deleteEmployee(id);
+            result.setMsg("删除成功");
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            result.setCode(1);
+            result.setMsg(e.getMessage());
         }
-        int result = employeeService.deleteEmployee(id);
-        if (result > 0) {
-            return Result.success(ResultCode.SUCCESS_DELETE_EMPLOYEE, null);
-        } else {
-            return Result.failure(ResultCode.ERR_DELETE_EMPLOYEE);
-        }
+        return result;
     }
 
     @RequestMapping("/updatePassword")
     @ResponseBody
-    public String updatePassword(String oldPassword, String password, HttpSession session) {
-        if (oldPassword != null && password != null) {
-            Employee empl = (Employee) session.getAttribute("user");
-            oldPassword = new Md5Hash(oldPassword, empl.getSalt(), 1024).toHex();
-            Employee emplo = employeeService.findEmployeeById(empl.getId());
-            if (emplo.getPassword().equals(oldPassword)) {
-                password = new Md5Hash(password, empl.getSalt(), 1024).toHex();
-                int result = employeeService.updatePassword(empl.getUuid(), password);
-                if (result > 0) {
-                    return Result.success(ResultCode.SUCCESS_UPDATE_PASSWORD, null);
+    public Result<Object> updatePassword(String oldPassword, String password, HttpSession session) {
+        Result<Object> result = new Result<>();
+        result.setCode(0);//默认交易成功
+        try {
+            if (oldPassword != null && password != null) {
+                Employee empl = (Employee) session.getAttribute("user");
+                oldPassword = new Md5Hash(oldPassword, empl.getSalt(), 1024).toHex();
+                Employee emplo = employeeService.findEmployeeById(empl.getId());
+                if (emplo.getPassword().equals(oldPassword)) {
+                    password = new Md5Hash(password, empl.getSalt(), 1024).toHex();
+                    employeeService.updatePassword(empl.getUuid(), password);
                 }
-                return Result.failure(ResultCode.SUCCESS_UPDATE_PASSWORD);
+            }else {
+                result.setCode(1);
+                result.setMsg("密码不能为空");
             }
-            return Result.failure(ResultCode.ERR_PASSWORD);
+            result.setMsg("修改成功");
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            result.setCode(1);
+            result.setMsg(e.getMessage());
         }
-        return null;
+        return result;
     }
 
     //批量删除员工
@@ -330,29 +359,38 @@ public class EmployeeController {
 
     @PostMapping("uploadAvatar")
     @ResponseBody
-    public String uploadHeader(@RequestParam(value = "file") MultipartFile headerImage, HttpSession session) throws IOException {
-        if (headerImage == null) {
-            throw new ServiceException("图片为空");
-        }
-        String filename = headerImage.getOriginalFilename();
-        String suffix = filename.substring(filename.lastIndexOf("."));
-        if (suffix.isEmpty()) {
-            throw new ServiceException("文件格式不正确");
-        }
-        //生成随机文件名
-        filename = UuidUtils.getUUID() + suffix;
-        //确定文件存放路径
-        File dest = new File(avatarImage + "/" + filename);
+    public Result<Object> uploadHeader(@RequestParam(value = "file") MultipartFile headerImage, HttpSession session) throws IOException {
+        Result<Object> result=new Result<>();
+        result.setCode(0);//默认交易成功
         try {
-            headerImage.transferTo(dest);
-        } catch (IOException e) {
-            logger.error("上传文件失败" + e.getMessage());
-            throw new RuntimeException("上传文件失败，服务器发生异常" + e);
+            if (headerImage == null) {
+                throw new ServiceException("图片为空");
+            }
+            String filename = headerImage.getOriginalFilename();
+            String suffix = filename.substring(filename.lastIndexOf("."));
+            if (suffix.isEmpty()) {
+                throw new ServiceException("文件格式不正确");
+            }
+            //生成随机文件名
+            filename = UuidUtils.getUUID() + suffix;
+            //确定文件存放路径
+            File dest = new File(avatarImage + "/" + filename);
+            try {
+                headerImage.transferTo(dest);
+            } catch (IOException e) {
+                logger.error("上传文件失败" + e.getMessage());
+                throw new RuntimeException("上传文件失败，服务器发生异常" + e);
+            }
+            Employee employee = (Employee) session.getAttribute("user");
+            String productImgUrl = domain + "/user/getImg/" + filename;
+            employeeService.updateAvatarImgPath(employee.getUuid(), productImgUrl);
+            result.setMsg("上传成功");
+        } catch (ServiceException e) {
+            result.setCode(1);
+            result.setMsg("上传成功");
+            logger.error(e.getMessage(),e);
         }
-        Employee employee = (Employee) session.getAttribute("user");
-        String productImgUrl = domain + "/user/getImg/" + filename;
-        employeeService.updateAvatarImgPath(employee.getUuid(), productImgUrl);
-        return Result.success();
+        return result;
     }
 
     @GetMapping("getImg/{fileName}")
@@ -380,13 +418,17 @@ public class EmployeeController {
     @GetMapping("roleList")
     @ResponseBody
     public Result<Role> roleList(@RequestParam(required = false) Integer rolid,
+                                 @RequestParam(required = false) Integer permid,
                                  @RequestParam(required = false, value = "page") Integer pageNumber,
                                  @RequestParam(required = false, value = "limit") Integer limit) {
         Result<Role> result = new Result<>();
         result.setCode(0);
+        if (!StringUtils.isEmpty(rolid)){
+            permid=null;
+        }
         try {
             Date date = new Date();
-            PageInfo<Role> roles = employeeService.roleList(rolid, pageNumber, limit);
+            PageInfo<Role> roles = employeeService.roleList(rolid,permid, pageNumber, limit);
             result.setMsg("查询成功");
             result.setCount(roles.getTotal());
             result.setData(roles.getList());
@@ -415,7 +457,7 @@ public class EmployeeController {
         Result<Object> result = new Result<>();
         result.setCode(0);
         try {
-            employeeService.importExcel(file);
+            employeeMessage.importExcel(file);
             result.setMsg("导入任务创建成功");
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

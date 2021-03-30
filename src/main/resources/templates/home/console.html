@@ -45,7 +45,7 @@
                                         <li class="layui-col-xs3">
                                             <a lay-href="/page/administratorsRole">
                                                 <i class="layui-icon layui-icon-auz"></i>
-                                                <cite>角色管理</cite>
+                                                <cite>权限管理</cite>
                                             </a>
                                         </li>
                                         <li class="layui-col-xs3">
@@ -83,7 +83,6 @@
                     <div class="layui-card">
                         <div class="layui-card-header">系统统计</div>
                         <div class="layui-card-body">
-
                             <div class="layui-carousel layadmin-carousel layadmin-backlog">
                                 <div carousel-item>
                                     <ul class="layui-row layui-col-space10">
@@ -278,6 +277,8 @@
                             money.push(data[i].money);
                         }
                         myChart.setOption(option);
+                    }else{
+                        console.log("资源加载失败")
                     }
                 }
             }
@@ -295,7 +296,6 @@
                         var a=parseFloat(data[3]);
                         $("#money").text(a > 9999 ? (Math.floor(a/1000)/10) + '万' : a)
                     }
-                    myChart.setOption(option);
                 }
             }
         )

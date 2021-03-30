@@ -21,5 +21,10 @@ public interface ProductService {
     List<DailyAccount> accountaccountWeekend() throws ParseException;
     List<Object> accountConsole();
     List<ProductType> productTypeList();
+    List<ProductType> productTypeList(Integer id);
+    ProductType findProductId(Integer id);
     void deleteProduct(Integer id);
+    void addProductType(ProductType productType);
+    void updateProductType(ProductType productType);
+    void deleteProductType(Integer typeid);
 }

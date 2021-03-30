@@ -21,7 +21,7 @@ public class MyFormAuthenticationFilter extends PermissionsAuthorizationFilter {
         JSONObject json = new JSONObject();
         json.put("state","403");
         json.put("msg","你没有此权限,请联系管理员");
-        json.put("code",0);
+        json.put("code",1);
         out.println(json);
         out.flush();
         out.close();

@@ -11,11 +11,17 @@
     <update id="updateProImg">
         update t_product set product_img=#{product_img} where product_id=#{product_id}
     </update>
+    <update id="updateProductType">
+        update t_producttype set typename=#{typename} where typeid=#{typeid}
+    </update>
     <delete id="delete">
         delete from ${name} where entrytime= #{time}
     </delete>
     <delete id="deleteProduct">
         delete from t_product where product_id=#{product_id}
+    </delete>
+    <delete id="deleteProductType">
+        delete from t_producttype where typeid=#{typeid}
     </delete>
     <select id="findProductList"  resultType="com.wmy.cosmetic.entity.Product">
          select * from t_product
@@ -37,9 +43,9 @@
     <select id="account" resultType="com.wmy.cosmetic.entity.Product">
         select product_id,product_name,product_account from t_product where product_account <![CDATA[ <= ]]> 10 order by product_account
     </select>
-    <select id="accountaccountWeekend" resultType="java.lang.Double">
+    <select id="accountaccountWeekend" resultType="com.wmy.cosmetic.entity.Statistics">
         SELECT
-        sum( payment )
+        DAY ( a.createdt ) as date ,sum( payment ) as money
         FROM
         t_order a
         WHERE
@@ -64,8 +70,22 @@
     <select id="productTypeList" resultType="com.wmy.cosmetic.entity.ProductType">
         select * from t_producttype
     </select>
+    <select id="findProductType" resultType="com.wmy.cosmetic.entity.ProductType">
+        select * from t_producttype where typeid=#{id}
+    </select>
+    <select id="productTypeList1" resultType="com.wmy.cosmetic.entity.ProductType">
+        select * from t_producttype
+        <where>
+            <if test="id!=null">
+                typeid=#{id}
+            </if>
+        </where>
+    </select>
     <insert id="insertProduct" parameterType="com.wmy.cosmetic.entity.Product">
         insert into  t_product(product_id,product_name,product_img,product_account,product_price,product_type,product_message)
         values (null,#{product_name},#{product_img},#{product_account},#{product_price},#{product_type},#{product_message})
+    </insert>
+    <insert id="addProductType">
+        insert into t_producttype(typeid,typename)values (#{typeid},#{typename})
     </insert>
 </mapper>

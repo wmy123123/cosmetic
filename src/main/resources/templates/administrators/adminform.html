@@ -16,13 +16,13 @@
     <div class="layui-form-item">
       <label class="layui-form-label">账号</label>
       <div class="layui-input-inline">
-        <input type="text" name="username"  placeholder="请输入用户名" autocomplete="off" class="layui-input">
+        <input type="text" name="username"  lay-verify="required" lay-verType="tips" placeholder="请输入用户名" autocomplete="off" class="layui-input">
       </div>
     </div>
       <div class="layui-form-item">
         <label class="layui-form-label">密码</label>
         <div class="layui-input-inline">
-          <input type="text" name="password" lay-verify="pass" placeholder="请输入密码" autocomplete="off" class="layui-input">
+          <input type="text" name="password" lay-verify="required" lay-verType="tips"  placeholder="请输入密码" autocomplete="off" class="layui-input">
         </div>
       </div>
     <div class="layui-form-item">
@@ -35,13 +35,13 @@
     <div class="layui-form-item">
       <label class="layui-form-label">姓名</label>
       <div class="layui-input-inline">
-        <input type="text" name="name" lay-verify="required" placeholder="请输入名字" autocomplete="off" class="layui-input">
+        <input type="text" name="name" lay-verType="tips" lay-verify="required" placeholder="请输入名字" autocomplete="off" class="layui-input">
       </div>
     </div>
     <div class="layui-form-item">
       <label class="layui-form-label">手机</label>
       <div class="layui-input-inline">
-        <input type="text" name="phone" lay-verify="phone" placeholder="请输入号码" autocomplete="off" class="layui-input">
+        <input type="text" name="phone" lay-verify="required" lay-verType="tips"  placeholder="请输入号码" autocomplete="off" class="layui-input">
       </div>
     </div>
     <div class="layui-form-item">
@@ -55,7 +55,7 @@
     <div class="layui-form-item">
       <label class="layui-form-label">工资</label>
       <div class="layui-input-inline">
-        <input type="text" name="salary" lay-verify="salary" placeholder="保留两位小数" autocomplete="off" class="layui-input">
+        <input type="text" name="salary"  lay-verType="tips" lay-verify="required" placeholder="保留两位小数" autocomplete="off" class="layui-input">
 
       </div>
     </div>

@@ -11,13 +11,24 @@
         </foreach>
     </insert>
     <insert id="addRole" useGeneratedKeys="true" keyProperty="rolid">
-        insert into t_role(rolna,description) values(#{rolna},#{description})
+        insert into t_role(rolid,rolna,description,createdt) values(#{rolid},#{rolna},#{description},#{createdt})
     </insert>
+    <insert id="addPerm">
+        insert into t_perm(parentId,name,url,type,permission,sort)
+                   values (#{parentid},#{name},#{url},#{type},#{permission},#{sort});
+    </insert>
+    <update id="updatePrerm">
+        update t_perm set parentId=#{parentid},name=#{name},url=#{url},type=#{type},permission=#{permission},sort=#{sort}
+          where id=#{id}
+    </update>
     <delete id="deleteRole">
         delete from t_role where rolid=#{rolid}
     </delete>
     <delete id="deleteRolePerms">
         delete from t_role_perm where roleid=#{rolid}
+    </delete>
+    <delete id="deletePerm">
+        delete from t_perm where id=#{id}
     </delete>
     <resultMap id="roles"  type="com.wmy.cosmetic.entity.Role">
         <id column="rolna" property="rolna"></id>
@@ -46,5 +57,22 @@
     </select>
     <select id="listAlpermission" resultType="com.wmy.cosmetic.entity.Perm">
         select url,permission from t_perm WHERE url !=''
+    </select>
+    <resultMap id="perms" type="com.wmy.cosmetic.entity.Perm2">
+        <id column="id" property="id"></id>
+        <result column="name" property="title"></result>
+        <result column="parentid" property="parentId"></result>
+        <association property="basicData" javaType="com.wmy.cosmetic.entity.BasicData">
+            <result column="url" property="url"></result>
+            <result column="type" property="type"></result>
+            <result column="permission" property="permission"></result>
+            <result column="sort" property="sort"></result>
+        </association>
+    </resultMap>
+    <select id="listAlPermission" resultMap="perms">
+        select * from t_perm
+    </select>
+    <select id="permsItem" resultType="com.wmy.cosmetic.entity.Perm">
+        select * from t_perm where id=#{id}
     </select>
 </mapper>

@@ -32,16 +32,16 @@
         <div class="layui-form-item">
             <label class="layui-form-label">角色名称</label>
             <div class="layui-input-inline">
-                <input type="hidden" th:value="${role.rolid}" id="role_id" name="rolid" placeholder="角色id"
+                <input type="hidden"  lay-verType="tips" th:value="${role.rolid}" id="role_id" name="rolid" placeholder="角色id"
                        lay-verify="required" autocomplete="off" class="layui-input">
-                <input type="text" th:value="${role.rolna}" name="rolna" placeholder="角色名称" lay-verify="required"
+                <input type="text" lay-verType="tips" th:value="${role.rolna}" name="rolna" placeholder="角色名称" lay-verify="required"
                        autocomplete="off" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">角色描述</label>
             <div class="layui-input-block">
-                <textarea style="height: 250px" th:text="${role.description}" name="description" lay-verify="required"
+                <textarea style="height: 250px" lay-verType="tips"  th:text="${role.description}" name="description" lay-verify="required"
                           placeholder="角色描述" class="layui-textarea"></textarea>
             </div>
         </div>

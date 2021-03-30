@@ -12,7 +12,7 @@ import java.util.Map;
 public interface EmployeeMapper {
     Employee findByUsernameAndPassword(String username);
     List<Employee> findEmployeeList(Map<String, Object> param);
-    int addEmployee(Employee employee);
+    void addEmployee(Employee employee);
     List<Perm> findPermsByEmployeeName(String username);
     Employee findEmployeeById(Integer id);
     Employee findEmployeeByUuid(String uuid);
@@ -32,5 +32,5 @@ public interface EmployeeMapper {
     //修改员工离职状态
     void updateStatus(String uuid, Date date);
     void updateStatus1(String uuid, Date date);
-    List<Role> roleList(Integer id);
+    List<Role> roleList(Integer id,Integer permid);
 }
